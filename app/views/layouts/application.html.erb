@@ -1,31 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= content_for(:title) || "Finding Your Way" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Finding Your Way">
-    <meta name="mobile-web-app-capable" content="yes">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>Finding Your Way - Поиск психолога</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= yield :head %>
+  <!-- Подключение шрифтов -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+  <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+<body class="bg-brand-bg text-brand-green font-sans antialiased">
+<!-- Навигация (Header) -->
+<header class="py-6 px-10 flex justify-between items-center text-sm">
+  <div class="flex items-center gap-4">
+    <span class="font-bold text-lg">Finding your way</span>
+    <span class="text-gray-400 uppercase tracking-widest text-xs">Этап 01 / Техническая спецификация</span>
+  </div>
+  <nav class="flex gap-6 bg-brand-light-green px-4 py-2 rounded-full font-medium">
+    <a href="#" class="hover:text-black">Обзор</a>
+    <a href="#" class="hover:text-black">Возможности</a>
+    <a href="#" class="hover:text-black">Технические заметки</a>
+    <a href="#" class="hover:text-black">Сдача</a>
+  </nav>
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-  </head>
+  <!-- Ссылки Devise -->
+  <div class="flex gap-4">
+    <% if user_signed_in? %>
+      <%= button_to "Выйти", destroy_user_session_path, method: :delete, class: "hover:underline" %>
+    <% else %>
+      <%= link_to "Вход", new_user_session_path, class: "hover:underline" %>
+      <%= link_to "Регистрация", new_user_registration_path, class: "hover:underline" %>
+    <% end %>
+  </div>
+</header>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
-      <%= yield %>
-    </main>
-  </body>
+<main class="container mx-auto px-10 pb-20">
+  <%= yield %>
+</main>
+</body>
 </html>

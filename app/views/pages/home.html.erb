@@ -1,0 +1,87 @@
+<!-- Hero Section -->
+<section class="mt-20 flex justify-between items-center mb-32">
+  <div class="max-w-2xl">
+    <p class="text-xs tracking-widest uppercase mb-6 text-gray-500">— Проект для важных первых шагов</p>
+    <h1 class="font-serif text-7xl leading-tight mb-8">
+      Найти своего<br>специалиста —<br>значит начать с<br><span class="italic">доверия.</span>
+    </h1>
+    <p class="text-lg text-gray-600 mb-10 max-w-lg leading-relaxed">
+      Finding your way — спокойный сервис записи к психологам. Эта страница собирает техническую спецификацию первого этапа: роли, модели, маршруты и набор возможностей для будущего Rails-приложения.
+    </p>
+    <div class="flex gap-4">
+      <a href="#" class="bg-brand-green text-white px-6 py-3 rounded-full font-medium hover:bg-opacity-90 transition">Открыть спецификацию ↓</a>
+      <a href="#" class="border border-brand-green px-6 py-3 rounded-full font-medium hover:bg-brand-green hover:text-white transition">Посмотреть возможности ></a>
+    </div>
+  </div>
+
+  <!-- Декоративный UI-элемент справа -->
+  <div class="w-1/2 relative flex justify-end">
+    <div class="bg-brand-light-green w-96 h-96 rounded-3xl relative flex items-center justify-center p-8 shadow-sm">
+      <div class="absolute w-64 h-64 border border-brand-green/20 rounded-full"></div>
+      <div class="absolute w-40 h-40 border border-brand-green/30 rounded-full"></div>
+      <div class="w-20 h-20 bg-brand-green rounded-full flex items-center justify-center z-10 text-white shadow-lg">
+        <!-- Иконка рукопожатия/сердца (условно) -->
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+      </div>
+      <!-- Плавающие бейджи -->
+      <div class="absolute top-10 right-[-20px] bg-white px-4 py-2 rounded-xl shadow-sm text-sm">🔍 Найти своего специалиста</div>
+      <div class="absolute bottom-20 right-10 bg-white px-4 py-2 rounded-xl shadow-sm text-sm">📅 Выбрать время</div>
+      <div class="absolute bottom-10 left-[-10px] bg-white px-4 py-2 rounded-xl shadow-sm text-sm">♡ Спокойное начало</div>
+    </div>
+  </div>
+</section>
+
+<!-- Возможности Section -->
+<section class="mb-32">
+  <div class="flex justify-between items-end mb-12">
+    <div>
+      <p class="text-xs tracking-widest uppercase mb-4 text-gray-500">02 / Возможности</p>
+      <h2 class="font-serif text-5xl">Небольшой набор.<br>Всё по делу.</h2>
+    </div>
+    <p class="max-w-md text-gray-600">Функциональность ограничена тем, что нужно для уверенного первого релиза: выбрать специалиста, открыть расписание и зафиксировать встречу.</p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-6 mb-6">
+    <!-- Карточка 1 -->
+    <div class="bg-brand-green text-white p-10 rounded-3xl h-80 flex flex-col justify-between">
+      <span class="text-sm opacity-60">01</span>
+      <div>
+        <h3 class="font-serif text-3xl mb-4">Регистрация и роли</h3>
+        <p class="opacity-80 mb-6">Авторизация с разделением доступа для клиента, психолога и администратора.</p>
+        <div class="flex gap-2 text-xs">
+          <span class="border border-white/30 rounded-full px-3 py-1">client</span>
+          <span class="border border-white/30 rounded-full px-3 py-1">psychologist</span>
+          <span class="border border-white/30 rounded-full px-3 py-1">admin</span>
+        </div>
+      </div>
+    </div>
+    <!-- Карточка 2 -->
+    <div class="bg-brand-peach p-10 rounded-3xl h-80 flex flex-col justify-between">
+      <span class="text-sm opacity-60">02</span>
+      <div>
+        <h3 class="font-serif text-3xl mb-4">Каталог специалистов</h3>
+        <p class="opacity-80 mb-6">Поиск психолога с фильтрами по стоимости консультации и опыту работы.</p>
+        <div class="flex gap-2 text-xs border-brand-green">
+          <span class="border border-brand-green/30 rounded-full px-3 py-1">каталог</span>
+          <span class="border border-brand-green/30 rounded-full px-3 py-1">фильтры</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Карточки 3, 4, 5 -->
+  <div class="grid grid-cols-3 gap-6">
+    <div class="bg-white p-8 rounded-3xl border border-gray-200">
+      <h3 class="font-serif text-2xl mb-3">Профиль и расписание</h3>
+      <p class="text-gray-600 text-sm mb-6">Профиль специалиста показывает специализацию, опыт, стоимость и доступные слоты.</p>
+    </div>
+    <div class="bg-white p-8 rounded-3xl border border-gray-200">
+      <h3 class="font-serif text-2xl mb-3">Запись на приём</h3>
+      <p class="text-gray-600 text-sm mb-6">Клиент выбирает время и оставляет короткую анкету с причиной обращения.</p>
+    </div>
+    <div class="bg-white p-8 rounded-3xl border border-gray-200">
+      <h3 class="font-serif text-2xl mb-3">Личные кабинеты</h3>
+      <p class="text-gray-600 text-sm mb-6">Обе роли управляют своим сценарием: клиент отменяет записи, психолог создаёт расписание.</p>
+    </div>
+  </div>
+</section>

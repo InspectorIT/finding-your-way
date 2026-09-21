@@ -1,48 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Finding Your Way - Поиск психолога</title>
+  <title><%= content_for(:title) || "Finding your way" %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <%= csrf_meta_tags %>
+  <meta name="description" content="Finding your way — сервис поиска психологов и записи на консультации.">
+
   <%= csp_meta_tag %>
 
-  <!-- Подключение шрифтов -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <!-- Ваш кастомный CSS (оставляем как есть, Propshaft его подхватит) -->
+  <%= stylesheet_link_tag "finding_your_way" %>
 
-  <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <!-- Современное подключение JS в Rails 8 -->
   <%= javascript_importmap_tags %>
 </head>
 
-<body class="bg-brand-bg text-brand-green font-sans antialiased">
-<!-- Навигация (Header) -->
-<header class="py-6 px-10 flex justify-between items-center text-sm">
-  <div class="flex items-center gap-4">
-    <span class="font-bold text-lg">Finding your way</span>
-    <span class="text-gray-400 uppercase tracking-widest text-xs">Этап 01 / Техническая спецификация</span>
-  </div>
-  <nav class="flex gap-6 bg-brand-light-green px-4 py-2 rounded-full font-medium">
-    <a href="#" class="hover:text-black">Обзор</a>
-    <a href="#" class="hover:text-black">Возможности</a>
-    <a href="#" class="hover:text-black">Технические заметки</a>
-    <a href="#" class="hover:text-black">Сдача</a>
-  </nav>
-
-  <!-- Ссылки Devise -->
-  <div class="flex gap-4">
-    <% if user_signed_in? %>
-      <%= button_to "Выйти", destroy_user_session_path, method: :delete, class: "hover:underline" %>
-    <% else %>
-      <%= link_to "Вход", new_user_session_path, class: "hover:underline" %>
-      <%= link_to "Регистрация", new_user_registration_path, class: "hover:underline" %>
-    <% end %>
-  </div>
-</header>
-
-<main class="container mx-auto px-10 pb-20">
-  <%= yield %>
-</main>
+<body>
+<%= yield %>
 </body>
-</html>

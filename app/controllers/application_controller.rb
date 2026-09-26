@@ -4,4 +4,25 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  helper_method :current_user, :logged_in?
+
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+  end
+
+  def logged_in?
+    !!current_user
+  end
+
+  def require_login
+    unless logged_in?
+      render json: { error: "Необходимо авторизоваться" }, status: :unauthorized
+    end
+  end
+
+  # Чтоб редирект не падал с ошибкой
+  def index
+    render plain: "Главная страница"
+  end
 end

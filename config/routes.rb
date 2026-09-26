@@ -11,4 +11,18 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # Новые маршруты /auth/register и /auth/login
+  namespace :auth do
+    get 'register', to: 'registrations#new'      # Показывает форму регистрации
+    post 'register', to: 'registrations#create'  # Обрабатывает отправку формы
+
+    get 'login', to: 'sessions#new'              # Показывает форму входа
+    post 'login', to: 'sessions#create'          # Обрабатывает вход
+    delete 'logout', to: 'sessions#destroy'      # Обрабатывает выход
+  end
+
+  # Заглушка для главной страницы, чтобы было куда делать редирект после входа
+  # Позже вы замените это на настоящий контроллер главной страницы
+  root "application#index"
 end

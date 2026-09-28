@@ -1,0 +1,52 @@
+<h1>Регистрация</h1>
+
+<%# Блок вывода ошибок валидации модели %>
+<% if @user.errors.any? %>
+  <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px;">
+    <h3>Ошибки при сохранении:</h3>
+    <ul>
+      <% @user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%# Форма регистрации %>
+<%= form_with model: @user, url: auth_register_path do |form| %>
+  <div style="margin-bottom: 10px;">
+    <%= form.label :name, "Ваше имя" %><br>
+    <%= form.text_field :name %>
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <%= form.label :phone, "Номер телефона" %><br>
+    <%= form.text_field :phone %>
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <%= form.label :email, "E-mail" %><br>
+    <%= form.email_field :email %>
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <%= form.label :password, "Пароль" %><br>
+    <%= form.password_field :password %>
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <%= form.label :password_confirmation, "Подтвердите пароль" %><br>
+    <%= form.password_field :password_confirmation %>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.label :role, "Роль" %><br>
+    <%# Выпадающий список. В БД уйдет "client" или "psychologist", а контроллер переведет это в 0 или 1 %>
+    <%= form.select :role, [['Я клиент', 'client'], ['Я психолог', 'psychologist']] %>
+  </div>
+
+  <%= form.submit "Зарегистрироваться" %>
+<% end %>
+
+<br>
+<%= link_to "Уже есть аккаунт? Войти", auth_login_path %>

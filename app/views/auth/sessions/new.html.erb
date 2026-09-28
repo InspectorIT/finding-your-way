@@ -1,0 +1,18 @@
+<h1>Вход в систему</h1>
+
+<%= form_with url: auth_login_path do |form| %>
+  <div style="margin-bottom: 10px;">
+    <%= form.label :email, "E-mail" %><br>
+    <%= form.email_field :email %>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.label :password, "Пароль" %><br>
+    <%= form.password_field :password %>
+  </div>
+
+  <%= form.submit "Войти" %>
+<% end %>
+
+<br>
+<%= link_to "Нет аккаунта? Зарегистрироваться", auth_register_path %>

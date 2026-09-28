@@ -12,7 +12,7 @@ class Auth::SessionsController < ApplicationController
       redirect_to root_path, notice: "Вы успешно вошли в систему!"
     else
       # flash.now показывает сообщение только на текущей странице (чтобы оно не осталось после редиректа)
-      flash.now[:alert] = "Неверный email или пароль"
+      flash.now[:alert] = "Неверный e-mail или пароль"
       render :new, status: :unprocessable_entity
     end
   end

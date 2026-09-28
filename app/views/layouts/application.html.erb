@@ -24,6 +24,14 @@
   </head>
 
   <body>
+    <!-- Блок для системных сообщений -->
+    <% flash.each do |type, msg| %>
+      <div style="padding: 10px; margin-bottom: 10px; border: 1px solid black; <%= type == 'alert' ? 'background: #ffcccc; color: red;' : 'background: #ccffcc; color: green;' %>">
+        <%= msg %>
+      </div>
+    <% end %>
+
+    <!-- Здесь рендерится содержимое конкретных страниц -->
     <%= yield %>
   </body>
 </html>

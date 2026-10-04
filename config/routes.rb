@@ -16,24 +16,24 @@ Rails.application.routes.draw do
 
   # Новые маршруты /auth/register и /auth/login
   namespace :auth do
-    get 'register', to: 'registrations#new'      # Показывает форму регистрации
-    post 'register', to: 'registrations#create'  # Обрабатывает отправку формы
+    get "register", to: "registrations#new"      # Показывает форму регистрации
+    post "register", to: "registrations#create"  # Обрабатывает отправку формы
 
-    get 'login', to: 'sessions#new'              # Показывает форму входа
-    post 'login', to: 'sessions#create'          # Обрабатывает вход
-    delete 'logout', to: 'sessions#destroy'      # Обрабатывает выход
+    get "login", to: "sessions#new"              # Показывает форму входа
+    post "login", to: "sessions#create"          # Обрабатывает вход
+    delete "logout", to: "sessions#destroy"      # Обрабатывает выход
   end
 
   Rails.application.routes.draw do
     root "home#index"
-    get 'ui_kit', to: 'home#ui_kit' # Маршрут для страницы UI-кита
+    get "ui_kit", to: "home#ui_kit" # Маршрут для страницы UI-кита
 
     namespace :auth do
-      get 'register', to: 'registrations#new'
-      post 'register', to: 'registrations#create'
-      get 'login', to: 'sessions#new'
-      post 'login', to: 'sessions#create'
-      delete 'logout', to: 'sessions#destroy'
+      get "register", to: "registrations#new"
+      post "register", to: "registrations#create"
+      get "login", to: "sessions#new"
+      post "login", to: "sessions#create"
+      delete "logout", to: "sessions#destroy"
     end
   end
 end

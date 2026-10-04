@@ -1,3 +1,81 @@
+<% week = [
+  { key: "2026-09-28", label: "Пн", date: "28 сент." },
+  { key: "2026-09-29", label: "Вт", date: "29 сент." },
+  { key: "2026-09-30", label: "Ср", date: "30 сент." },
+  { key: "2026-10-01", label: "Чт", date: "1 окт." },
+  { key: "2026-10-02", label: "Пт", date: "2 окт." }
+] %>
+
+<% psychologists = [
+  {
+    name: "Иванов Иван",
+    specialization: "Клинический психолог",
+    experience: "10 лет опыта",
+    avatar: "ИИ",
+    slots: {
+      "2026-09-28" => [
+        { time: "09:00", status: "available" },
+        { time: "10:00", status: "booked" },
+        { time: "11:00", status: "available" },
+        { time: "14:00", status: "available" }
+      ],
+      "2026-09-29" => [
+        { time: "10:00", status: "available" },
+        { time: "11:00", status: "booked" },
+        { time: "15:00", status: "available" }
+      ],
+      "2026-09-30" => [
+        { time: "09:00", status: "booked" },
+        { time: "12:00", status: "available" },
+        { time: "13:00", status: "available" }
+      ],
+      "2026-10-01" => [
+        { time: "11:00", status: "available" },
+        { time: "14:00", status: "booked" },
+        { time: "16:00", status: "available" }
+      ],
+      "2026-10-02" => [
+        { time: "10:00", status: "available" },
+        { time: "13:00", status: "available" },
+        { time: "15:00", status: "booked" }
+      ]
+    }
+  },
+  {
+    name: "Петрова Анна",
+    specialization: "Когнитивно-поведенческая терапия",
+    experience: "7 лет опыта",
+    avatar: "ПА",
+    slots: {
+      "2026-09-28" => [
+        { time: "09:30", status: "available" },
+        { time: "11:30", status: "available" },
+        { time: "15:00", status: "booked" }
+      ],
+      "2026-09-29" => [
+        { time: "09:00", status: "booked" },
+        { time: "12:00", status: "available" },
+        { time: "14:00", status: "available" }
+      ],
+      "2026-09-30" => [
+        { time: "10:00", status: "available" },
+        { time: "11:00", status: "available" },
+        { time: "16:00", status: "booked" }
+      ],
+      "2026-10-01" => [
+        { time: "09:00", status: "available" },
+        { time: "13:00", status: "booked" },
+        { time: "15:00", status: "available" }
+      ],
+      "2026-10-02" => [
+        { time: "11:00", status: "available" },
+        { time: "14:00", status: "available" },
+        { time: "16:00", status: "booked" }
+      ]
+    }
+  }
+] %>
+
 <h1>UI Kit</h1>
 <p>Здесь собраны базовые компоненты дизайна приложения.</p>
 <hr>
@@ -27,3 +105,11 @@
   <p>Опыт работы более 10 лет. Помогаю справиться с тревожностью и выгоранием.</p>
   <%= link_to "Записаться", "#", class: "btn btn-secondary" %>
 </div>
+
+<h2 style="margin-top: 30px;">Календарь слотов</h2>
+<p>
+  Пример переиспользуемого компонента расписания: у каждого психолога свои
+  свободные и занятые слоты.
+</p>
+
+<%= render "slot_calendar", week: week, psychologists: psychologists %>

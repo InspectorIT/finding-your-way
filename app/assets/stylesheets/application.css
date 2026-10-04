@@ -79,3 +79,212 @@ h1, h2, h3 { color: var(--primary-color); }
     align-items: center;
 }
 .navbar a { text-decoration: none; color: var(--primary-color); margin-left: 15px; }
+
+/* Календарь слотов */
+.slot-calendar {
+    margin-top: 20px;
+}
+
+.slot-calendar__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.slot-calendar__toolbar-title {
+    margin: 0;
+    text-align: center;
+    font-size: 22px;
+}
+
+.slot-calendar__toolbar-subtitle {
+    margin: 4px 0 0;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.slot-calendar__nav {
+    min-width: 44px;
+    width: 44px;
+    padding: 0;
+    font-size: 22px;
+    line-height: 44px;
+}
+
+.slot-calendar__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.slot-calendar__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #4b5563;
+    font-size: 14px;
+}
+
+.slot-calendar__legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex: 0 0 12px;
+}
+
+.slot-calendar__legend-dot--available {
+    background: #18bc9c;
+}
+
+.slot-calendar__legend-dot--booked {
+    background: #e5e7eb;
+    border: 1px solid #cbd5e1;
+    box-sizing: border-box;
+}
+
+.slot-calendar__psychologist {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.slot-calendar__psychologist-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #eef0f2;
+}
+
+.slot-calendar__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: bold;
+}
+
+.slot-calendar__psychologist-name {
+    margin: 0;
+    font-size: 18px;
+}
+
+.slot-calendar__psychologist-meta {
+    margin: 2px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.slot-calendar__days {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(150px, 1fr));
+    gap: 1px;
+    background: #e5e7eb;
+}
+
+.slot-calendar__day {
+    min-width: 0;
+    background: #fff;
+}
+
+.slot-calendar__day-head {
+    padding: 12px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.slot-calendar__day-name {
+    display: block;
+    color: var(--primary-color);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.slot-calendar__day-date {
+    display: block;
+    margin-top: 2px;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.slot-calendar__slots {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+}
+
+.slot-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    border-radius: 6px;
+    font: inherit;
+    text-align: left;
+}
+
+button.slot-item {
+    cursor: pointer;
+}
+
+.slot-item--available {
+    background: #e8f8f4;
+    border: 1px solid rgba(24, 188, 156, 0.45);
+    color: #117a66;
+}
+
+.slot-item--available:hover {
+    background: #d9f4ed;
+}
+
+.slot-item--booked {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.slot-item__time {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.slot-item__status {
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.slot-calendar__empty {
+    padding: 10px 2px 4px;
+    color: #9ca3af;
+    font-size: 13px;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .slot-calendar__days {
+        grid-template-columns: repeat(5, minmax(150px, 1fr));
+        overflow-x: auto;
+    }
+
+    .slot-calendar__day {
+        min-width: 150px;
+    }
+}

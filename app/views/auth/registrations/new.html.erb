@@ -1,52 +1,51 @@
-<h1>Регистрация</h1>
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+  <h1 style="text-align: center; margin-top: 0;">Регистрация</h1>
 
-<%# Блок вывода ошибок валидации модели %>
-<% if @user.errors.any? %>
-  <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px;">
-    <h3>Ошибки при сохранении:</h3>
-    <ul>
-      <% @user.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
+  <% if @user.errors.any? %>
+    <div style="color: #721c24; background: #f8d7da; padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius);">
+      <h4 style="margin-top: 0; margin-bottom: 10px;">Ошибки при сохранении:</h4>
+      <ul style="margin-bottom: 0;">
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 
-<%# Форма регистрации %>
-<%= form_with model: @user, url: auth_register_path do |form| %>
-  <div style="margin-bottom: 10px;">
-    <%= form.label :name, "Ваше имя" %><br>
-    <%= form.text_field :name %>
-  </div>
+  <%= form_with model: @user, url: auth_register_path do |form| %>
+    <div class="form-group">
+      <%= form.label :name, "Ваше имя", class: "form-label" %>
+      <%= form.text_field :name, class: "form-control" %>
+    </div>
 
-  <div style="margin-bottom: 10px;">
-    <%= form.label :phone, "Номер телефона" %><br>
-    <%= form.text_field :phone %>
-  </div>
+    <div class="form-group">
+      <%= form.label :phone, "Номер телефона", class: "form-label" %>
+      <%= form.text_field :phone, class: "form-control" %>
+    </div>
 
-  <div style="margin-bottom: 10px;">
-    <%= form.label :email, "E-mail" %><br>
-    <%= form.email_field :email %>
-  </div>
+    <div class="form-group">
+      <%= form.label :email, "E-mail", class: "form-label" %>
+      <%= form.email_field :email, class: "form-control" %>
+    </div>
 
-  <div style="margin-bottom: 10px;">
-    <%= form.label :password, "Пароль" %><br>
-    <%= form.password_field :password %>
-  </div>
+    <div class="form-group">
+      <%= form.label :password, "Пароль", class: "form-label" %>
+      <%= form.password_field :password, class: "form-control" %>
+    </div>
 
-  <div style="margin-bottom: 10px;">
-    <%= form.label :password_confirmation, "Подтвердите пароль" %><br>
-    <%= form.password_field :password_confirmation %>
-  </div>
+    <div class="form-group">
+      <%= form.label :password_confirmation, "Подтвердите пароль", class: "form-label" %>
+      <%= form.password_field :password_confirmation, class: "form-control" %>
+    </div>
 
-  <div style="margin-bottom: 15px;">
-    <%= form.label :role, "Роль" %><br>
-    <%# Выпадающий список. В БД уйдет "client" или "psychologist", а контроллер переведет это в 0 или 1 %>
-    <%= form.select :role, [['Я клиент', 'client'], ['Я психолог', 'psychologist']] %>
-  </div>
+    <div class="form-group">
+      <%= form.label :role, "Роль", class: "form-label" %>
+      <%# Обратите внимание на пустые скобки {}. Для хелпера select классы передаются 4-м аргументом %>
+      <%= form.select :role, [['Я клиент', 'client'], ['Я психолог', 'psychologist']], {}, class: "form-control" %>
+    </div>
 
-  <%= form.submit "Зарегистрироваться" %>
-<% end %>
-
-<br>
-<%= link_to "Уже есть аккаунт? Войти", auth_login_path %>
+    <div style="margin-top: 25px;">
+      <%= form.submit "Зарегистрироваться", class: "btn btn-primary", style: "width: 100%;" %>
+    </div>
+  <% end %>
+</div>

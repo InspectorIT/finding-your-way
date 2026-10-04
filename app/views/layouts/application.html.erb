@@ -24,14 +24,32 @@
   </head>
 
   <body>
-    <!-- Блок для системных сообщений -->
-    <% flash.each do |type, msg| %>
-      <div style="padding: 10px; margin-bottom: 10px; border: 1px solid black; <%= type == 'alert' ? 'background: #ffcccc; color: red;' : 'background: #ccffcc; color: green;' %>">
-        <%= msg %>
+    <nav class="navbar">
+      <div>
+        <strong><%= link_to "Finding Your Way", root_path, style: "margin-left: 0; font-size: 1.2em;" %></strong>
+        <%= link_to "UI Kit", ui_kit_path %>
       </div>
-    <% end %>
+      <div>
+        <% if logged_in? %>
+          <span>Привет, <%= current_user.name %>!</span>
+          <%= link_to "Выйти", auth_logout_path, data: { turbo_method: :delete }, class: "btn btn-danger", style: "padding: 5px 10px; margin-left: 15px;" %>
+        <% else %>
+          <%= link_to "Войти", auth_login_path, class: "btn btn-secondary" %>
+          <%= link_to "Регистрация", auth_register_path, class: "btn btn-primary", style: "color: white;" %>
+        <% end %>
+      </div>
+    </nav>
 
-    <!-- Здесь рендерится содержимое конкретных страниц -->
-    <%= yield %>
+    <!-- Контейнер для отступов контента -->
+    <main style="padding: 30px; max-width: 1000px; margin: 0 auto;">
+      <% flash.each do |type, msg| %>
+        <div style="padding: 10px; margin-bottom: 20px; border-radius: 4px; <%= type == 'alert' ? 'background: #f8d7da; color: #721c24;' : 'background: #d4edda; color: #155724;' %>">
+          <%= msg %>
+        </div>
+      <% end %>
+
+      <!-- Здесь рендерится содержимое конкретных страниц -->
+      <%= yield %>
+    </main>
   </body>
 </html>

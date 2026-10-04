@@ -1,0 +1,16 @@
+<div style="text-align: center; margin-top: 50px;">
+  <h1>Добро пожаловать в Finding Your Way</h1>
+  <p style="font-size: 1.2em; color: #555;">
+    Платформа для поиска своего психолога и удобной записи на сеансы.
+  </p>
+
+  <% unless logged_in? %>
+    <div style="margin-top: 30px;">
+      <%= link_to "Найти психолога", "#", class: "btn btn-primary", style: "font-size: 1.2em; padding: 15px 30px;" %>
+    </div>
+  <% else %>
+    <div style="margin-top: 30px;">
+      <%= link_to "Перейти в личный кабинет", "#", class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

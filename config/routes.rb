@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "home/index"
+  get "home/ui_kit"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -22,7 +24,16 @@ Rails.application.routes.draw do
     delete 'logout', to: 'sessions#destroy'      # Обрабатывает выход
   end
 
-  # Заглушка для главной страницы, чтобы было куда делать редирект после входа
-  # Позже вы замените это на настоящий контроллер главной страницы
-  root "application#index"
+  Rails.application.routes.draw do
+    root "home#index"
+    get 'ui_kit', to: 'home#ui_kit' # Маршрут для страницы UI-кита
+
+    namespace :auth do
+      get 'register', to: 'registrations#new'
+      post 'register', to: 'registrations#create'
+      get 'login', to: 'sessions#new'
+      post 'login', to: 'sessions#create'
+      delete 'logout', to: 'sessions#destroy'
+    end
+  end
 end

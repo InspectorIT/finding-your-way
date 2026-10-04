@@ -1,0 +1,80 @@
+<div class="slot-calendar card">
+  <div class="slot-calendar__toolbar">
+    <button type="button" class="btn btn-secondary slot-calendar__nav" aria-label="Предыдущая неделя">‹</button>
+
+    <div>
+      <h3 class="slot-calendar__toolbar-title">28 сентября — 2 октября</h3>
+      <p class="slot-calendar__toolbar-subtitle">Выберите свободное время для записи</p>
+    </div>
+
+    <button type="button" class="btn btn-secondary slot-calendar__nav" aria-label="Следующая неделя">›</button>
+  </div>
+
+  <div class="slot-calendar__legend" aria-label="Обозначения слотов">
+    <span class="slot-calendar__legend-item">
+      <span class="slot-calendar__legend-dot slot-calendar__legend-dot--available"></span>
+      Свободно
+    </span>
+    <span class="slot-calendar__legend-item">
+      <span class="slot-calendar__legend-dot slot-calendar__legend-dot--booked"></span>
+      Занято
+    </span>
+  </div>
+
+  <% psychologists.each do |psychologist| %>
+    <section class="slot-calendar__psychologist">
+      <div class="slot-calendar__psychologist-head">
+        <div class="slot-calendar__avatar" aria-hidden="true">
+          <%= psychologist[:avatar] %>
+        </div>
+
+        <div>
+          <h4 class="slot-calendar__psychologist-name"><%= psychologist[:name] %></h4>
+          <p class="slot-calendar__psychologist-meta">
+            <%= psychologist[:specialization] %> · <%= psychologist[:experience] %>
+          </p>
+        </div>
+      </div>
+
+      <div class="slot-calendar__days">
+        <% week.each do |day| %>
+          <div class="slot-calendar__day">
+            <div class="slot-calendar__day-head">
+              <span class="slot-calendar__day-name"><%= day[:label] %></span>
+              <span class="slot-calendar__day-date"><%= day[:date] %></span>
+            </div>
+
+            <div class="slot-calendar__slots">
+              <% slots = psychologist[:slots][day[:key]] || [] %>
+
+              <% if slots.empty? %>
+                <div class="slot-calendar__empty">Нет слотов</div>
+              <% else %>
+                <% slots.each do |slot| %>
+                  <% if slot[:status] == "available" %>
+                    <button
+                      type="button"
+                      class="slot-item slot-item--available"
+                      aria-label="<%= "#{psychologist[:name]}, #{day[:date]}, #{slot[:time]}, свободно" %>"
+                    >
+                      <span class="slot-item__time"><%= slot[:time] %></span>
+                      <span class="slot-item__status">свободно</span>
+                    </button>
+                  <% else %>
+                    <div
+                      class="slot-item slot-item--booked"
+                      aria-label="<%= "#{psychologist[:name]}, #{day[:date]}, #{slot[:time]}, занято" %>"
+                    >
+                      <span class="slot-item__time"><%= slot[:time] %></span>
+                      <span class="slot-item__status">занято</span>
+                    </div>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>

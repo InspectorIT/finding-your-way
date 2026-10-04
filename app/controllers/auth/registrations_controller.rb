@@ -23,6 +23,6 @@ class Auth::RegistrationsController < ApplicationController
 
   def user_params
     # has_secure_password ожидает поля :password и :password_confirmation
-    params.require(:user).permit(:email, :password, :password_confirmation, :name, :phone, :role)
+    params.require(:user).permit(:email, :password, :password_confirmation, :name, :phone)
   end
 end

@@ -38,12 +38,6 @@
       <%= form.password_field :password_confirmation, class: "form-control" %>
     </div>
 
-    <div class="form-group">
-      <%= form.label :role, "Роль", class: "form-label" %>
-      <%# Обратите внимание на пустые скобки {}. Для хелпера select классы передаются 4-м аргументом %>
-      <%= form.select :role, [['Я клиент', 'client'], ['Я психолог', 'psychologist']], {}, class: "form-control" %>
-    </div>
-
     <div style="margin-top: 25px;">
       <%= form.submit "Зарегистрироваться", class: "btn btn-primary", style: "width: 100%;" %>
     </div>

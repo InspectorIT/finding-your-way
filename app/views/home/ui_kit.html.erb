@@ -1,0 +1,29 @@
+<h1>UI Kit</h1>
+<p>Здесь собраны базовые компоненты дизайна приложения.</p>
+<hr>
+
+<h2>Кнопки</h2>
+<%= link_to "Primary Button", "#", class: "btn btn-primary" %>
+<%= link_to "Secondary Button", "#", class: "btn btn-secondary" %>
+<%= button_to "Danger Button", "#", class: "btn btn-danger", method: :get %>
+
+<h2 style="margin-top: 30px;">Формы</h2>
+<div class="card" style="max-width: 400px;">
+  <div class="form-group">
+    <label class="form-label">Email</label>
+    <input type="email" class="form-control" placeholder="example@mail.com">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Пароль</label>
+    <input type="password" class="form-control" placeholder="******">
+  </div>
+  <button class="btn btn-primary">Отправить</button>
+</div>
+
+<h2 style="margin-top: 30px;">Карточки</h2>
+<div class="card">
+  <h3>Иванов Иван</h3>
+  <p><strong>Специализация:</strong> Клинический психолог</p>
+  <p>Опыт работы более 10 лет. Помогаю справиться с тревожностью и выгоранием.</p>
+  <%= link_to "Записаться", "#", class: "btn btn-secondary" %>
+</div>

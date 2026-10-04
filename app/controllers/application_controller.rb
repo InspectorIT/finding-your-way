@@ -20,9 +20,4 @@ class ApplicationController < ActionController::Base
       render json: { error: "Необходимо авторизоваться" }, status: :unauthorized
     end
   end
-
-  # Чтоб редирект не падал с ошибкой
-  def index
-    render plain: "Главная страница"
-  end
 end

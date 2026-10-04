@@ -8,3 +8,74 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* Базовые переменные (ваша цветовая палитра) */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #18bc9c;
+    --danger-color: #e74c3c;
+    --text-main: #333333;
+    --bg-main: #f8f9fa;
+    --border-radius: 8px;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-main);
+    background-color: var(--bg-main);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* ================= UI KIT COMPONENTS ================= */
+
+/* Типографика */
+h1, h2, h3 { color: var(--primary-color); }
+
+/* Кнопки */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.8; }
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-secondary { background-color: var(--secondary-color); color: white; }
+.btn-danger { background-color: var(--danger-color); color: white; }
+
+/* Формы */
+.form-group { margin-bottom: 15px; }
+.form-label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+}
+
+/* Карточки (для профилей психологов или сеансов) */
+.card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* Навигация */
+.navbar {
+    background-color: white;
+    padding: 15px 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar a { text-decoration: none; color: var(--primary-color); margin-left: 15px; }

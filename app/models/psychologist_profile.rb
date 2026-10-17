@@ -1,6 +1,12 @@
 class PsychologistProfile < ApplicationRecord
   belongs_to :user
-  has_many :slots, dependent: :destroy
+  has_many :slots, foreign_key: :psychologist_id, dependent: :destroy
+
+  enum :status, {
+    pending: 0,
+    approved: 1,
+    rejected: 2
+  }
 
   validates :specialization, :bio, presence: true
 

@@ -1,0 +1,52 @@
+<h1>Психологи</h1>
+<p>
+  <%= link_to "Ближайший свободный сеанс",
+              psychologists_path(sort: "soonest"),
+              class: "btn btn-secondary" %>
+  <%= link_to "Сбросить сортировку",
+              psychologists_path,
+              class: "btn btn-secondary" %>
+</p>
+
+<p>
+  Выберите специалиста, который подходит именно вам.
+</p>
+
+<% if @psychologists.any? %>
+  <div class="psychologists-list">
+    <% @psychologists.each do |profile| %>
+      <article class="psychologist-card">
+        <h2><%= link_to profile.user.name, psychologist_path(profile) %></h2>
+
+        <p>
+          <strong>Специализация:</strong>
+          <%= profile.specialization %>
+        </p>
+
+        <p>
+          <strong>Опыт:</strong>
+          <%= profile.experience_years %> лет
+        </p>
+
+        <p>
+          <strong>Стоимость сеанса:</strong>
+          <%= number_to_currency(
+                profile.price_per_session,
+                unit: "₽",
+                precision: 0,
+                format: "%n %u"
+              ) %>
+        </p>
+
+        <p>
+          <strong>Длительность сеанса:</strong>
+          <%= profile.session_duration %> минут
+        </p>
+
+        <p><%= profile.bio %></p>
+      </article>
+    <% end %>
+  </div>
+<% else %>
+  <p>Пока нет одобренных психологов.</p>
+<% end %>

@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
   root "home#index"
   get "ui_kit", to: "home#ui_kit"
+  resources :psychologists, only: [ :index, :show ]
+  resources :appointments, only: [ :create ]
+  resources :psychologist_applications, only: [ :new, :create ]
+
+  namespace :admin do
+    resources :psychologist_applications, only: [ :index, :update ]
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

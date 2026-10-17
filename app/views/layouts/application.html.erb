@@ -28,6 +28,14 @@
       <div>
         <strong><%= link_to "Finding Your Way", root_path, style: "margin-left: 0; font-size: 1.2em;" %></strong>
         <%= link_to "UI Kit", ui_kit_path %>
+
+        <% if logged_in? && current_user.client? && current_user.psychologist_profile.nil? %>
+          <%= link_to "Стать психологом", new_psychologist_application_path %>
+        <% end %>
+
+        <% if logged_in? && current_user.admin? %>
+          <%= link_to "Заявки психологов", admin_psychologist_applications_path %>
+        <% end %>
       </div>
       <div>
         <% if logged_in? %>

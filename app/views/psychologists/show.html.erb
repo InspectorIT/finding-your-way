@@ -1,0 +1,61 @@
+<h1><%= @psychologist.user.name %></h1>
+
+<p>
+  <strong>Специализация:</strong>
+  <%= @psychologist.specialization %>
+</p>
+
+<p>
+  <strong>Опыт работы:</strong>
+  <%= @psychologist.experience_years %> лет
+</p>
+
+<p>
+  <strong>Стоимость сеанса:</strong>
+  <%= number_to_currency(
+        @psychologist.price_per_session,
+        unit: "₽",
+        precision: 0,
+        format: "%n %u"
+      ) %>
+</p>
+
+<p>
+  <strong>Длительность сеанса:</strong>
+  <%= @psychologist.session_duration %> минут
+</p>
+
+<p><%= @psychologist.bio %></p>
+
+<h2>Свободные сеансы</h2>
+
+<% if @available_slots.any? %>
+  <ul>
+    <% @available_slots.each do |slot| %>
+      <li>
+        <%= slot.start_time.strftime("%d.%m.%Y %H:%M") %>
+        —
+        <%= slot.end_time.strftime("%H:%M") %>
+
+        <% if logged_in? && current_user.id != @psychologist.user_id %>
+          <%= button_to "Записаться",
+                        appointments_path,
+                        method: :post,
+                        params: { slot_id: slot.id },
+                        class: "btn btn-primary" %>
+        <% elsif !logged_in? %>
+          <%= link_to "Войти, чтобы записаться",
+                      auth_login_path,
+                      class: "btn btn-secondary" %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Пока нет свободных сеансов.</p>
+<% end %>
+
+<p>
+  <%= link_to "Вернуться к каталогу", psychologists_path,
+              class: "btn btn-secondary" %>
+</p>

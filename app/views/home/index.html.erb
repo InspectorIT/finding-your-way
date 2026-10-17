@@ -6,7 +6,7 @@
 
   <% unless logged_in? %>
     <div style="margin-top: 30px;">
-      <%= link_to "Найти психолога", "#", class: "btn btn-primary", style: "font-size: 1.2em; padding: 15px 30px;" %>
+      <%= link_to "Найти психолога", psychologists_path, class: "btn btn-primary", style: "font-size: 1.2em; padding: 15px 30px;" %>
     </div>
   <% else %>
     <div style="margin-top: 30px;">

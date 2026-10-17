@@ -1,0 +1,56 @@
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+  <h1>Заявка на профиль психолога</h1>
+
+  <p>
+    Заполните профессиональные данные.
+    Профиль появится в каталоге после одобрения администратором.
+  </p>
+
+  <% if @psychologist_profile.errors.any? %>
+    <div style="color: #721c24; background: #f8d7da; padding: 15px; margin-bottom: 20px;">
+      <h4>Проверьте введённые данные:</h4>
+      <ul>
+        <% @psychologist_profile.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @psychologist_profile,
+                url: psychologist_applications_path do |form| %>
+    <div class="form-group">
+      <%= form.label :specialization, "Специализация" %>
+      <%= form.text_field :specialization, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :experience_years, "Опыт работы, лет" %>
+      <%= form.number_field :experience_years,
+                            min: 0,
+                            class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :price_per_session, "Стоимость сеанса, ₽" %>
+      <%= form.number_field :price_per_session,
+                            min: 0.01,
+                            step: 0.01,
+                            class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :session_duration, "Длительность сеанса, минут" %>
+      <%= form.number_field :session_duration,
+                            min: 1,
+                            class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :bio, "О себе и своей практике" %>
+      <%= form.text_area :bio, rows: 5, class: "form-control" %>
+    </div>
+
+    <%= form.submit "Отправить заявку", class: "btn btn-primary" %>
+  <% end %>
+</div>

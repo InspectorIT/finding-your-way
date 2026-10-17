@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :psychologists, only: [ :index, :show ]
   resources :appointments, only: [ :create ]
   resources :psychologist_applications, only: [ :new, :create ]
+  resources :slots, only: [ :index, :create ]
 
   namespace :admin do
     resources :psychologist_applications, only: [ :index, :update ]

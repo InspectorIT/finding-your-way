@@ -36,6 +36,9 @@
         <% if logged_in? && current_user.admin? %>
           <%= link_to "Заявки психологов", admin_psychologist_applications_path %>
         <% end %>
+        <% if logged_in? && current_user.psychologist? && current_user.psychologist_profile&.approved? %>
+          <%= link_to "Моё расписание", slots_path %>
+        <% end %>
       </div>
       <div>
         <% if logged_in? %>

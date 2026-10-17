@@ -1,4 +1,3 @@
-
 require "test_helper"
 
 class AppointmentsControllerTest < ActionDispatch::IntegrationTest
@@ -24,6 +23,61 @@ class AppointmentsControllerTest < ActionDispatch::IntegrationTest
     assert_equal slot, appointment.slot
     assert_predicate appointment, :pending?
     assert_redirected_to psychologist_url(profile)
+  end
+
+  test "client cannot book an already occupied slot" do
+    profile = create_profile
+    slot = create_slot(profile, starts_at: 1.day.from_now.change(usec: 0))
+    original_client = create_client
+
+    another_client = User.create!(
+      email: "another-client@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      name: "Другой клиент",
+      phone: "+79994445567",
+      role: :client
+    )
+
+    existing_appointment = Appointment.create!(
+      client: original_client,
+      slot: slot,
+      status: :pending
+    )
+
+    post auth_login_url, params: {
+      email: another_client.email,
+      password: "password123"
+    }
+
+    assert_redirected_to root_url
+
+    assert_no_difference("Appointment.count") do
+      post appointments_url, params: { slot_id: slot.id }
+    end
+
+    assert_redirected_to psychologist_url(profile)
+    assert_equal existing_appointment, slot.reload.appointment
+  end
+
+  test "psychologist cannot book own slot" do
+    profile = create_profile
+    slot = create_slot(profile, starts_at: 1.day.from_now.change(usec: 0))
+    psychologist = profile.user
+
+    post auth_login_url, params: {
+      email: psychologist.email,
+      password: "password123"
+    }
+
+    assert_redirected_to root_url
+
+    assert_no_difference("Appointment.count") do
+      post appointments_url, params: { slot_id: slot.id }
+    end
+
+    assert_redirected_to psychologist_url(profile)
+    assert_nil slot.reload.appointment
   end
 
   private

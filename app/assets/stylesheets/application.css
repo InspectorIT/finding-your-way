@@ -288,3 +288,123 @@ button.slot-item {
         min-width: 150px;
     }
 }
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 85px;
+}
+
+.home-hero {
+    max-width: 800px;
+    margin: 40px auto 60px;
+    text-align: center;
+}
+
+.home-hero__button {
+    margin-top: 18px;
+    font-size: 1.1em;
+    padding: 14px 28px;
+}
+
+.home-psychologists {
+    scroll-margin-top: 85px;
+    margin-bottom: 50px;
+}
+
+.psychologists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    align-items: start;
+    gap: 22px;
+    margin-top: 25px;
+}
+
+.psychologist-card {
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+.psychologist-card h3 {
+    margin-top: 0;
+    margin-bottom: 6px;
+}
+
+.psychologist-card__specialization {
+    color: #6b7280;
+    margin-top: 0;
+}
+
+.psychologist-card__details,
+.psychologist-booking {
+    margin-top: 14px;
+}
+
+.psychologist-card__details > summary,
+.psychologist-booking > summary {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+    list-style: none;
+    cursor: pointer;
+}
+
+.psychologist-card__details > summary::-webkit-details-marker,
+.psychologist-booking > summary::-webkit-details-marker {
+    display: none;
+}
+
+.psychologist-card__collapse-label {
+    display: none;
+}
+
+.psychologist-card__details[open] .psychologist-card__expand-label {
+    display: none;
+}
+
+.psychologist-card__details[open] .psychologist-card__collapse-label {
+    display: inline;
+}
+
+.psychologist-card__details-content {
+    padding: 12px 4px 0;
+}
+
+.psychologist-booking__toggle {
+    margin-top: 12px;
+}
+
+.psychologist-booking__content {
+    padding-top: 14px;
+}
+
+.psychologist-booking__content > h4 {
+    margin: 0 0 12px;
+    color: var(--primary-color);
+}
+
+.psychologist-card .slot-calendar__days {
+    overflow-x: auto;
+}
+
+.psychologist-card .slot-calendar__day {
+    min-width: 125px;
+}
+
+.slot-calendar__booking-form {
+    margin: 0;
+}
+
+.slot-calendar__booking-form .slot-item {
+    font: inherit;
+}
+
+@media (max-width: 600px) {
+    .home-hero {
+        margin-top: 20px;
+    }
+
+    .psychologists-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

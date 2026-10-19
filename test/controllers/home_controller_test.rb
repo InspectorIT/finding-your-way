@@ -11,11 +11,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  # Проверка, что главная страница успешно загружается и содержит ссылку «Найти психолога», ведущую в каталог
-  test "homepage links to psychologist catalog" do
+  test "homepage links to psychologist cards" do
     get root_url
 
     assert_response :success
-    assert_select "a[href=?]", psychologists_path, text: "Найти психолога"
+    assert_select "a[href=?]",
+                  root_path(anchor: "psychologists"),
+                  text: "Найти специалиста"
+    assert_select "#psychologists"
   end
 end

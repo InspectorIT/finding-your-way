@@ -20,8 +20,15 @@ class AppointmentsController < ApplicationController
     appointment = current_user.appointments.build(slot: slot)
 
     if appointment.save
-      redirect_to psychologist_path(profile),
-                  notice: "Заявка отправлена и ожидает подтверждения."
+      if params[:return_to_home] == "1"
+        redirect_to root_path(
+                      calendar: profile.id,
+                      anchor: "psychologist-#{profile.id}-calendar"
+                    ), notice: "Вы записаны на сеанс."
+      else
+        redirect_to psychologist_path(profile),
+                    notice: "Вы записаны на сеанс."
+      end
     else
       redirect_to psychologist_path(profile),
                   alert: appointment.errors.full_messages.to_sentence

@@ -28,6 +28,7 @@
       <div>
         <strong><%= link_to "Finding Your Way", root_path, style: "margin-left: 0; font-size: 1.2em;" %></strong>
         <%= link_to "UI Kit", ui_kit_path %>
+        <%= link_to "Найти специалиста", root_path(anchor: "psychologists") %>
 
         <% if logged_in? && current_user.client? && current_user.psychologist_profile.nil? %>
           <%= link_to "Стать психологом", new_psychologist_application_path %>
@@ -43,10 +44,26 @@
       <div>
         <% if logged_in? %>
           <span>Привет, <%= current_user.name %>!</span>
-          <%= link_to "Выйти", auth_logout_path, data: { turbo_method: :delete }, class: "btn btn-danger", style: "padding: 5px 10px; margin-left: 15px;" %>
+
+          <%= link_to "Личный кабинет",
+                      "#",
+                      class: "btn btn-secondary",
+                      style: "padding: 5px 10px; margin-left: 15px;" %>
+
+          <%= link_to "Выйти",
+                      auth_logout_path,
+                      data: { turbo_method: :delete },
+                      class: "btn btn-danger",
+                      style: "padding: 5px 10px; margin-left: 10px;" %>
         <% else %>
-          <%= link_to "Войти", auth_login_path, class: "btn btn-secondary" %>
-          <%= link_to "Регистрация", auth_register_path, class: "btn btn-primary", style: "color: white;" %>
+          <%= link_to "Войти",
+                      auth_login_path,
+                      class: "btn btn-secondary" %>
+
+          <%= link_to "Регистрация",
+                      auth_register_path,
+                      class: "btn btn-primary",
+                      style: "color: white;" %>
         <% end %>
       </div>
     </nav>

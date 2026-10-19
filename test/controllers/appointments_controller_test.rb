@@ -21,7 +21,6 @@ class AppointmentsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal client, appointment.client
     assert_equal slot, appointment.slot
-    assert_predicate appointment, :pending?
     assert_redirected_to psychologist_url(profile)
   end
 
@@ -41,8 +40,7 @@ class AppointmentsControllerTest < ActionDispatch::IntegrationTest
 
     existing_appointment = Appointment.create!(
       client: original_client,
-      slot: slot,
-      status: :pending
+      slot: slot
     )
 
     post auth_login_url, params: {

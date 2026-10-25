@@ -21,7 +21,11 @@ class AppointmentsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal client, appointment.client
     assert_equal slot, appointment.slot
-    assert_redirected_to psychologist_url(profile)
+    assert_redirected_to psychologist_url(
+                           profile,
+                           calendar: profile.id,
+                           anchor: "psychologist-#{profile.id}-calendar"
+                         )
   end
 
   test "client cannot book an already occupied slot" do
@@ -54,7 +58,11 @@ class AppointmentsControllerTest < ActionDispatch::IntegrationTest
       post appointments_url, params: { slot_id: slot.id }
     end
 
-    assert_redirected_to psychologist_url(profile)
+    assert_redirected_to psychologist_url(
+                           profile,
+                           calendar: profile.id,
+                           anchor: "psychologist-#{profile.id}-calendar"
+                         )
     assert_equal existing_appointment, slot.reload.appointment
   end
 

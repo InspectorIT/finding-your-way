@@ -12,8 +12,12 @@ class AppointmentsController < ApplicationController
     end
 
     unless slot.start_time.future? && slot.appointment.nil?
-      redirect_to psychologist_path(profile),
-                  alert: "Этот слот уже недоступен."
+      redirect_to psychologist_path(
+                    profile,
+                    calendar: profile.id,
+                    week: params[:week],
+                    anchor: "psychologist-#{profile.id}-calendar"
+                  ), alert: "Этот слот уже недоступен."
       return
     end
 
@@ -23,11 +27,16 @@ class AppointmentsController < ApplicationController
       if params[:return_to_home] == "1"
         redirect_to root_path(
                       calendar: profile.id,
+                      week: params[:week],
                       anchor: "psychologist-#{profile.id}-calendar"
                     ), notice: "Вы записаны на сеанс."
       else
-        redirect_to psychologist_path(profile),
-                    notice: "Вы записаны на сеанс."
+        redirect_to psychologist_path(
+                      profile,
+                      calendar: profile.id,
+                      week: params[:week],
+                      anchor: "psychologist-#{profile.id}-calendar"
+                    ), notice: "Вы записаны на сеанс."
       end
     else
       redirect_to psychologist_path(profile),

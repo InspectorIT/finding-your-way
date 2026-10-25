@@ -18,15 +18,28 @@ class PsychologistsController < ApplicationController
 
   def show
     @psychologist = PsychologistProfile.approved
-                                       .includes(:user)
+                                       .includes(:user, slots: :appointment)
                                        .find_by(id: params[:id])
 
     return head :not_found unless @psychologist
 
-    @available_slots = @psychologist.slots
-                                    .left_outer_joins(:appointment)
-                                    .where("slots.start_time > ?", Time.current)
-                                    .where(appointments: { id: nil })
-                                    .order(:start_time)
+    @week_offset = params.fetch(:week, "0").to_i.clamp(0, 52)
+    week_start = Time.zone.today.beginning_of_week + @week_offset.weeks
+
+    @calendar_days = (0..4).map { |offset| week_start + offset.days }
+
+    week_end = (@calendar_days.last + 1.day).beginning_of_day
+
+    visible_slots = @psychologist.slots
+                                 .includes(:appointment)
+                                 .where(
+                                   start_time: @calendar_days.first.beginning_of_day...week_end
+                                 )
+                                 .where("slots.start_time > ?", Time.current)
+                                 .order(:start_time)
+
+    @slots_by_profile_and_date = {
+      @psychologist.id => visible_slots.group_by { |slot| slot.start_time.to_date }
+    }
   end
 end

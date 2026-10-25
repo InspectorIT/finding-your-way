@@ -71,8 +71,11 @@ class PsychologistsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Анна Петрова"
     assert_includes response.body, "Клиническая психология"
-    assert_includes response.body,
-                    slot.start_time.strftime("%d.%m.%Y %H:%M")
+    assert_select ".slot-calendar__day-date",
+                  text: slot.start_time.strftime("%d.%m")
+
+    assert_select ".slot-item__time",
+                  text: slot.start_time.strftime("%H:%M")
   end
 
   test "show does not expose a pending profile" do

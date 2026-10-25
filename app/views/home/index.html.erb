@@ -1,4 +1,3 @@
-
 <section class="home-hero">
   <h1>Добро пожаловать в Finding Your Way</h1>
 
@@ -22,199 +21,28 @@
         <article class="card psychologist-card"
                  id="psychologist-<%= profile.id %>">
 
+          <% if profile.photo.attached? %>
+            <%= image_tag profile.photo,
+                          alt: "Фотография: #{profile.user.name}",
+                          class: "psychologist-card__photo" %>
+          <% else %>
+            <div class="psychologist-card__photo-placeholder"
+                 aria-label="Фотография ещё не добавлена">
+              <%= profile.user.name.split.map { |part| part[0] }.first(2).join.upcase %>
+            </div>
+          <% end %>
+
           <h3><%= profile.user.name %></h3>
 
-          <p class="psychologist-card__specialization">
-            <%= profile.specialization %>
-          </p>
+          <%= link_to "Подробнее о специалисте",
+                      psychologist_path(profile),
+                      class: "btn btn-secondary psychologist-card__details-toggle" %>
 
-          <details class="psychologist-card__details">
-            <summary class="btn btn-secondary psychologist-card__details-toggle">
-              <span class="psychologist-card__expand-label">
-                Развернуть информацию о специалисте
-              </span>
-              <span class="psychologist-card__collapse-label">
-                Свернуть информацию о специалисте
-              </span>
-            </summary>
-
-            <div class="psychologist-card__details-content">
-              <p>
-                <strong>Опыт работы:</strong>
-                <%= profile.experience_years %> лет
-              </p>
-
-              <p>
-                <strong>Стоимость сеанса:</strong>
-                <%= number_to_currency(
-                      profile.price_per_session,
-                      unit: "₽",
-                      precision: 0,
-                      format: "%n %u"
-                    ) %>
-              </p>
-
-              <p>
-                <strong>Длительность:</strong>
-                <%= profile.session_duration %> минут
-              </p>
-
-              <p><%= profile.bio %></p>
-            </div>
-          </details>
-
-          <details
-            class="psychologist-booking"
-            id="psychologist-<%= profile.id %>-calendar"
-            <%= "open" if params[:calendar].to_s == profile.id.to_s %>
-          >
-            <summary class="btn btn-primary psychologist-booking__toggle">
-              Записаться
-            </summary>
-
-            <div class="psychologist-booking__content">
-              <h4>Свободные сеансы</h4>
-
-              <div class="slot-calendar__toolbar">
-                <% if @week_offset.positive? %>
-                  <%= link_to "‹",
-                              root_path(
-                                week: @week_offset - 1,
-                                calendar: profile.id,
-                                anchor: "psychologist-#{profile.id}-calendar"
-                              ),
-                              class: "btn btn-secondary slot-calendar__nav",
-                              aria: { label: "Предыдущая неделя" } %>
-                <% else %>
-                  <button type="button"
-                          class="btn btn-secondary slot-calendar__nav"
-                          disabled
-                          aria-label="Предыдущая неделя">
-                    ‹
-                  </button>
-                <% end %>
-
-                <div>
-                  <h4 class="slot-calendar__toolbar-title">
-                    <%= @calendar_days.first.strftime("%d.%m.%Y") %>
-                    —
-                    <%= @calendar_days.last.strftime("%d.%m.%Y") %>
-                  </h4>
-
-                  <p class="slot-calendar__toolbar-subtitle">
-                    Выберите свободное время
-                  </p>
-                </div>
-
-                <%= link_to "›",
-                            root_path(
-                              week: @week_offset + 1,
-                              calendar: profile.id,
-                              anchor: "psychologist-#{profile.id}-calendar"
-                            ),
-                            class: "btn btn-secondary slot-calendar__nav",
-                            aria: { label: "Следующая неделя" } %>
-              </div>
-
-              <div class="slot-calendar__legend">
-                <span class="slot-calendar__legend-item">
-                  <span class="slot-calendar__legend-dot slot-calendar__legend-dot--available"></span>
-                  Свободно
-                </span>
-
-                <span class="slot-calendar__legend-item">
-                  <span class="slot-calendar__legend-dot slot-calendar__legend-dot--booked"></span>
-                  Занято
-                </span>
-              </div>
-
-              <div class="slot-calendar__days">
-                <% @calendar_days.each do |day| %>
-                  <% day_slots =
-                       @slots_by_profile_and_date.dig(profile.id, day) || [] %>
-
-                  <div class="slot-calendar__day">
-                    <div class="slot-calendar__day-head">
-                      <span class="slot-calendar__day-name">
-                        <%= %w[Вс Пн Вт Ср Чт Пт Сб][day.wday] %>
-                      </span>
-
-                      <span class="slot-calendar__day-date">
-                        <%= day.strftime("%d.%m") %>
-                      </span>
-                    </div>
-
-                    <div class="slot-calendar__slots">
-                      <% if day_slots.empty? %>
-                        <div class="slot-calendar__empty">
-                          Нет слотов
-                        </div>
-                      <% else %>
-                        <% day_slots.sort_by(&:start_time).each do |slot| %>
-                          <% if slot.appointment.present? %>
-                            <div class="slot-item slot-item--booked">
-                              <span class="slot-item__time">
-                                <%= slot.start_time.strftime("%H:%M") %>
-                              </span>
-
-                              <span class="slot-item__status">занято</span>
-                            </div>
-
-                          <% elsif logged_in? &&
-                                   current_user.client? &&
-                                   current_user.id != profile.user_id %>
-
-                            <%= button_to appointments_path,
-                                          method: :post,
-                                          params: {
-                                            slot_id: slot.id,
-                                            return_to_home: "1"
-                                          },
-                                          class: "slot-item slot-item--available",
-                                          form: {
-                                            class: "slot-calendar__booking-form"
-                                          } do %>
-                              <span class="slot-item__time">
-                                <%= slot.start_time.strftime("%H:%M") %>
-                              </span>
-
-                              <span class="slot-item__status">выбрать</span>
-                            <% end %>
-
-                          <% elsif !logged_in? %>
-
-                            <%= link_to auth_login_path,
-                                        class: "slot-item slot-item--available" do %>
-                              <span class="slot-item__time">
-                                <%= slot.start_time.strftime("%H:%M") %>
-                              </span>
-
-                              <span class="slot-item__status">
-                                войти для записи
-                              </span>
-                            <% end %>
-
-                          <% else %>
-
-                            <div class="slot-item slot-item--available">
-                              <span class="slot-item__time">
-                                <%= slot.start_time.strftime("%H:%M") %>
-                              </span>
-
-                              <span class="slot-item__status">свободно</span>
-                            </div>
-
-                          <% end %>
-                        <% end %>
-                      <% end %>
-                    </div>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-          </details>
+          <%= render "psychologists/booking_dialog",
+                     profile: profile,
+                     home_page: true %>
         </article>
-      <% end %>
+    <% end %>
     </div>
   <% else %>
     <p>Пока нет одобренных психологов.</p>

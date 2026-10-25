@@ -44,7 +44,8 @@ class PsychologistApplicationsController < ApplicationController
       :experience_years,
       :price_per_session,
       :session_duration,
-      :bio
+      :bio,
+      :photo
     )
   end
 end

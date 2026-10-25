@@ -20,6 +20,13 @@
   <%= form_with model: @psychologist_profile,
                 url: psychologist_applications_path do |form| %>
     <div class="form-group">
+      <%= form.label :photo, "Фотография специалиста" %>
+      <%= form.file_field :photo,
+                          accept: "image/png,image/jpeg,image/webp",
+                          class: "form-control" %>
+    </div>
+
+    <div class="form-group">
       <%= form.label :specialization, "Специализация" %>
       <%= form.text_field :specialization, class: "form-control" %>
     </div>

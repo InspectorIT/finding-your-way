@@ -1,6 +1,7 @@
 class PsychologistProfile < ApplicationRecord
   belongs_to :user
   has_many :slots, foreign_key: :psychologist_id, dependent: :destroy
+  has_one_attached :photo
 
   enum :status, {
     pending: 0,

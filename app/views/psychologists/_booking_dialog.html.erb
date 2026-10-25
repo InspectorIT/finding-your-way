@@ -187,7 +187,7 @@
                         </div>
 
                       <% elsif logged_in? &&
-                               current_user.client? &&
+                               (current_user.client? || current_user.psychologist?) &&
                                current_user.id != profile.user_id %>
 
                         <!-- Свободный слот: записываем клиента -->

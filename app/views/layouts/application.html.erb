@@ -30,8 +30,11 @@
         <%= link_to "UI Kit", ui_kit_path %>
         <%= link_to "Найти специалиста", root_path(anchor: "psychologists") %>
 
-        <% if logged_in? && current_user.client? && current_user.psychologist_profile.nil? %>
-          <%= link_to "Стать психологом", new_psychologist_application_path %>
+        <% if logged_in? && current_user.client? &&
+              (current_user.psychologist_profile.nil? ||
+                current_user.psychologist_profile.rejected?) %>
+          <%= link_to "Стать психологом",
+                      new_psychologist_application_path %>
         <% end %>
 
         <% if logged_in? && current_user.admin? %>
@@ -46,7 +49,7 @@
           <span>Привет, <%= current_user.name %>!</span>
 
           <%= link_to "Личный кабинет",
-                      "#",
+                      account_path,
                       class: "btn btn-secondary",
                       style: "color: #000000; background-color: #add8e6; padding: 5px 10px; margin-left: 15px;" %>
 
@@ -74,6 +77,52 @@
         <div style="padding: 10px; margin-bottom: 20px; border-radius: 4px; <%= type == 'alert' ? 'background: #f8d7da; color: #721c24;' : 'background: #d4edda; color: #155724;' %>">
           <%= msg %>
         </div>
+      <% end %>
+
+      <% if logged_in? && current_user.psychologist_profile.present? %>
+        <% application_profile = current_user.psychologist_profile %>
+
+        <section
+          class="application-status application-status--<%= application_profile.status %>"
+          data-controller="dismissible"
+          data-dismissible-key-value="application-status-<%= application_profile.id %>-<%= application_profile.status %>"
+          aria-live="polite"
+        >
+          <button
+            type="button"
+            class="application-status__close"
+            data-action="dismissible#dismiss"
+            aria-label="Закрыть уведомление"
+          >
+            &times;
+          </button>
+
+          <% if application_profile.pending? %>
+            <strong>Заявка на рассмотрении</strong>
+            <p>
+              Мы получили вашу заявку на профиль психолога.
+              Администратор ещё не принял решение.
+            </p>
+
+          <% elsif application_profile.approved? %>
+            <strong>Ваша заявка одобрена!</strong>
+            <p>
+              Теперь ваш профиль опубликован, и клиенты могут записываться
+              к вам на сеансы.
+            </p>
+
+          <% elsif application_profile.rejected? %>
+            <strong>Заявка отклонена</strong>
+            <p>
+              Вы можете проверить свои данные, исправить их и отправить
+              заявку повторно.
+            </p>
+
+            <%= link_to "Исправить заявку и отправить повторно",
+                        new_psychologist_application_path,
+                        class: "btn btn-secondary" %>
+          <% end %>
+        </section>
       <% end %>
 
       <!-- Здесь рендерится содержимое конкретных страниц -->

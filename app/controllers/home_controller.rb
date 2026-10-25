@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   def index
     @week_offset = params.fetch(:week, "0").to_i.clamp(0, 52)
-    week_start = Time.zone.today.beginning_of_week + @week_offset.weeks
+    week_start = calendar_week_start(@week_offset)
     @calendar_days = (0..4).map { |offset| week_start + offset.days }
 
     @psychologists = PsychologistProfile.approved

@@ -1,0 +1,31 @@
+<section class="account-page">
+  <h1>Личный кабинет</h1>
+
+  <p>
+    Добро пожаловать, <strong><%= current_user.name %></strong>!
+  </p>
+
+  <% if current_user.client? %>
+    <p>Здесь вы можете посмотреть свои записи к психологам.</p>
+
+    <%= link_to "Мои записи",
+                account_appointments_path,
+                class: "btn btn-primary account-tab" %>
+
+  <% elsif current_user.psychologist? %>
+    <p>Здесь вы можете посмотреть клиентов, записанных к вам.</p>
+
+    <%= link_to "Записи клиентов",
+                account_appointments_path,
+                class: "btn btn-primary account-tab" %>
+
+  <% else %>
+    <p>
+      Просмотр записей доступен клиентам и психологам.
+    </p>
+  <% end %>
+
+  <p class="account-page__back">
+    <%= link_to "Вернуться на главную", root_path %>
+  </p>
+</section>

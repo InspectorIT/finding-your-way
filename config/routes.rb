@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   root "home#index"
   get "ui_kit", to: "home#ui_kit"
+  get "account", to: "account#show", as: :account
+  get "account/appointments",
+      to: "account#appointments",
+      as: :account_appointments
   resources :psychologists, only: [ :index, :show ]
   resources :appointments, only: [ :create ]
   resources :psychologist_applications, only: [ :new, :create ]

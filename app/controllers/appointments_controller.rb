@@ -2,6 +2,12 @@ class AppointmentsController < ApplicationController
   before_action :require_login
 
   def create
+    unless current_user.client? || current_user.psychologist?
+      redirect_to root_path,
+                  alert: "Записываться могут только клиенты и психологи."
+      return
+    end
+
     slot = Slot.find(params[:slot_id])
     profile = slot.psychologist_profile
 

@@ -1,0 +1,113 @@
+
+<section class="account-page">
+  <h1>Личный кабинет</h1>
+
+  <% if current_user.client? %>
+
+    <h2>Мои записи</h2>
+
+    <% if @my_appointments.any? %>
+      <div class="account-appointments">
+        <% @my_appointments.each do |appointment| %>
+          <% slot = appointment.slot %>
+          <% profile = slot.psychologist_profile %>
+
+          <article class="card account-appointment">
+            <h3>
+              <%= link_to profile.user.name, psychologist_path(profile) %>
+            </h3>
+
+            <p>
+              <strong>Специализация:</strong>
+              <%= profile.specialization %>
+            </p>
+
+            <p>
+              <strong>Дата:</strong>
+              <%= slot.start_time.strftime("%d.%m.%Y") %>
+            </p>
+
+            <p>
+              <strong>Время:</strong>
+              <%= slot.start_time.strftime("%H:%M") %>–<%= slot.end_time.strftime("%H:%M") %>
+            </p>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <p>У вас пока нет записей к психологам.</p>
+
+      <%= link_to "Найти психолога",
+                  root_path(anchor: "psychologists"),
+                  class: "btn btn-primary" %>
+    <% end %>
+
+  <% elsif current_user.psychologist? %>
+
+    <h2>Мои записи к другим специалистам</h2>
+
+    <% if @my_appointments.any? %>
+      <div class="account-appointments">
+        <% @my_appointments.each do |appointment| %>
+          <% slot = appointment.slot %>
+          <% profile = slot.psychologist_profile %>
+
+          <article class="card account-appointment">
+            <h3>
+              <%= link_to profile.user.name, psychologist_path(profile) %>
+            </h3>
+
+            <p><%= profile.specialization %></p>
+
+            <p>
+              <strong>Дата:</strong>
+              <%= slot.start_time.strftime("%d.%m.%Y") %>
+            </p>
+
+            <p>
+              <strong>Время:</strong>
+              <%= slot.start_time.strftime("%H:%M") %>–<%= slot.end_time.strftime("%H:%M") %>
+            </p>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <p>Вы пока не записывались к другим специалистам.</p>
+    <% end %>
+
+    <h2>Клиенты, записанные ко мне</h2>
+
+    <% if @received_appointments.any? %>
+      <div class="account-appointments">
+        <% @received_appointments.each do |appointment| %>
+          <% slot = appointment.slot %>
+
+          <article class="card account-appointment">
+            <h3><%= appointment.client.name %></h3>
+
+            <p>
+              <strong>Дата:</strong>
+              <%= slot.start_time.strftime("%d.%m.%Y") %>
+            </p>
+
+            <p>
+              <strong>Время:</strong>
+              <%= slot.start_time.strftime("%H:%M") %>–<%= slot.end_time.strftime("%H:%M") %>
+            </p>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <p>Пока никто не записался на ваши сеансы.</p>
+    <% end %>
+
+  <% else %>
+
+    <p>Для администратора список клиентских записей не предусмотрен.</p>
+
+  <% end %>
+
+  <p class="account-page__back">
+    <%= link_to "На главную", root_path, class: "btn btn-secondary" %>
+  </p>
+</section>

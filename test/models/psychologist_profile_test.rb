@@ -29,6 +29,26 @@ class PsychologistProfileTest < ActiveSupport::TestCase
     assert build_profile.valid?
   end
 
+  test "new profile is pending by default" do
+    profile = build_profile
+
+    assert_predicate profile, :pending?
+  end
+
+  test "profile can be approved" do
+    profile = build_profile
+    profile.status = :approved
+
+    assert_predicate profile, :approved?
+  end
+
+  test "profile can be rejected" do
+    profile = build_profile
+    profile.status = :rejected
+
+    assert_predicate profile, :rejected?
+  end
+
   test "belongs to user" do
     profile = build_profile
     user = profile.user

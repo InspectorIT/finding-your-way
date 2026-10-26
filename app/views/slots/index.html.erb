@@ -1,0 +1,158 @@
+<h1>Моё расписание</h1>
+
+<p>Добавляйте интервалы времени, в которые готовы проводить сеансы.</p>
+
+<% if @slot.errors.any? %>
+  <div class="card" style="margin-bottom: 20px;">
+    <strong>Не удалось добавить сеанс:</strong>
+    <ul>
+      <% @slot.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="card" style="margin-bottom: 25px;">
+  <h2>Добавить свободный сеанс</h2>
+
+  <%= form_with model: @slot, url: slots_path do |form| %>
+    <div class="form-group">
+      <%= form.label :start_time, "Начало" %>
+      <%= form.datetime_field :start_time,
+                              required: true,
+                              class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :end_time, "Окончание" %>
+      <%= form.datetime_field :end_time,
+                              required: true,
+                              class: "form-control" %>
+    </div>
+
+    <%= hidden_field_tag :week, @week_offset %>
+    <%= form.submit "Добавить сеанс", class: "btn btn-primary" %>
+  <% end %>
+</div>
+
+<h2 id="scheduled-intervals">Запланированные интервалы</h2>
+
+<div class="slot-calendar card">
+
+  <div class="slot-calendar__toolbar">
+    <div class="slot-calendar__toolbar-side">
+      <% if @week_offset.positive? %>
+        <%= link_to "‹",
+                    slots_path(week: @week_offset - 1, anchor: "scheduled-intervals"),
+                    class: "btn btn-secondary slot-calendar__nav",
+                    aria: { label: "Предыдущая неделя" } %>
+      <% else %>
+        <button
+          type="button"
+          class="btn btn-secondary slot-calendar__nav"
+          disabled
+          aria-label="Предыдущая неделя"
+        >
+          ‹
+        </button>
+      <% end %>
+    </div>
+
+    <div class="slot-calendar__toolbar-center">
+      <h3 class="slot-calendar__toolbar-title">
+        <%= @calendar_days.first.strftime("%d.%m.%Y") %>
+        —
+        <%= @calendar_days.last.strftime("%d.%m.%Y") %>
+      </h3>
+
+      <p class="slot-calendar__toolbar-subtitle">
+        Ваше расписание сеансов
+      </p>
+    </div>
+
+    <div class="slot-calendar__toolbar-side">
+      <% if @week_offset < 52 %>
+        <%= link_to "›",
+                    slots_path(week: @week_offset + 1, anchor: "scheduled-intervals"),
+                    class: "btn btn-secondary slot-calendar__nav",
+                    aria: { label: "Следующая неделя" } %>
+      <% else %>
+        <button
+          type="button"
+          class="btn btn-secondary slot-calendar__nav"
+          disabled
+          aria-label="Следующая неделя"
+        >
+          ›
+        </button>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @week_offset.positive? %>
+    <div class="slot-calendar__current-week">
+      <%= link_to "Текущая неделя",
+                  slots_path(week: 0, anchor: "scheduled-intervals"),
+                  class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+
+  <div class="slot-calendar__legend">
+    <span class="slot-calendar__legend-item">
+      <span class="slot-calendar__legend-dot slot-calendar__legend-dot--available"></span>
+      Свободно
+    </span>
+
+    <span class="slot-calendar__legend-item">
+      <span class="slot-calendar__legend-dot slot-calendar__legend-dot--booked"></span>
+      Записан клиент
+    </span>
+  </div>
+
+  <div class="slot-calendar__days">
+    <% @calendar_days.each do |day| %>
+      <% day_slots = (@slots_by_date[day] || []).sort_by(&:start_time) %>
+
+      <div class="slot-calendar__day">
+        <div class="slot-calendar__day-head">
+          <span class="slot-calendar__day-name">
+            <%= %w[Вс Пн Вт Ср Чт Пт Сб][day.wday] %>
+          </span>
+
+          <span class="slot-calendar__day-date">
+            <%= day.strftime("%d.%m") %>
+          </span>
+        </div>
+
+        <div class="slot-calendar__slots">
+          <% if day_slots.empty? %>
+            <div class="slot-calendar__empty">Нет интервалов</div>
+          <% else %>
+            <% day_slots.each do |slot| %>
+              <% if slot.appointment.present? %>
+                <div class="slot-item slot-item--booked-by-client">
+                  <span class="slot-item__time">
+                    <%= slot.start_time.strftime("%H:%M") %>
+                  </span>
+
+                  <span class="slot-item__status">
+                    <%= slot.appointment.client.name %>
+                  </span>
+                </div>
+              <% else %>
+                <div class="slot-item slot-item--available">
+                  <span class="slot-item__time">
+                    <%= slot.start_time.strftime("%H:%M") %>
+                  </span>
+
+                  <span class="slot-item__status">Свободно</span>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

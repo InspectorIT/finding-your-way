@@ -56,9 +56,9 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "role has expected values" do
-    assert_equal 0, User.roles["client"]
-    assert_equal 1, User.roles["psychologist"]
-    assert_equal 2, User.roles["admin"]
+    assert_equal "client", User.roles[:client]
+    assert_equal "psychologist", User.roles[:psychologist]
+    assert_equal "admin", User.roles[:admin]
   end
 
   test "password can be authenticated" do

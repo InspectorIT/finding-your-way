@@ -42,13 +42,10 @@ class AppointmentTest < ActiveSupport::TestCase
     )
   end
 
-  def build_appointment(attributes = {})
+  def build_appointment
     Appointment.new(
-      {
-        client: build_client,
-        slot: build_slot,
-        status: :pending
-      }.merge(attributes)
+      client: build_client,
+      slot: build_slot
     )
   end
 
@@ -68,18 +65,6 @@ class AppointmentTest < ActiveSupport::TestCase
     assert_instance_of Slot, appointment.slot
   end
 
-  test "pending status is valid" do
-    appointment = build_appointment(status: :pending)
-
-    assert appointment.valid?
-  end
-
-  test "confirmed status is valid" do
-    appointment = build_appointment(status: :confirmed)
-
-    assert appointment.valid?
-  end
-
   test "slot can have only one appointment" do
     slot = build_slot
     client_one = build_client
@@ -94,14 +79,12 @@ class AppointmentTest < ActiveSupport::TestCase
 
     Appointment.create!(
       client: client_one,
-      slot: slot,
-      status: :pending
+      slot: slot
     )
 
     second_appointment = Appointment.new(
       client: client_two,
-      slot: slot,
-      status: :pending
+      slot: slot
     )
 
     assert_not second_appointment.valid?

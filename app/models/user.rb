@@ -8,9 +8,9 @@ class User < ApplicationRecord
            dependent: :destroy
 
   enum :role, {
-    client: 0,
-    psychologist: 1,
-    admin: 2
+    client: "client",
+    psychologist: "psychologist",
+    admin: "admin"
   }
 
   validates :email,

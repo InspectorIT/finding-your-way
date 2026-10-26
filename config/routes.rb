@@ -1,10 +1,23 @@
 Rails.application.routes.draw do
-  get "home/index"
-  get "home/ui_kit"
+  root "home#index"
+  get "ui_kit", to: "home#ui_kit"
+  get "account", to: "account#show", as: :account
+  get "account/appointments",
+      to: "account#appointments",
+      as: :account_appointments
+  resources :psychologists, only: [ :index, :show ]
+  resources :appointments, only: [ :create ]
+  resources :psychologist_applications, only: [ :new, :create ]
+  resources :slots, only: [ :index, :create ]
+
+  namespace :admin do
+    resources :psychologist_applications, only: [ :index, :update ]
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
+  # Проверка работоспособности приложения
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
@@ -22,18 +35,5 @@ Rails.application.routes.draw do
     get "login", to: "sessions#new"              # Показывает форму входа
     post "login", to: "sessions#create"          # Обрабатывает вход
     delete "logout", to: "sessions#destroy"      # Обрабатывает выход
-  end
-
-  Rails.application.routes.draw do
-    root "home#index"
-    get "ui_kit", to: "home#ui_kit" # Маршрут для страницы UI-кита
-
-    namespace :auth do
-      get "register", to: "registrations#new"
-      post "register", to: "registrations#create"
-      get "login", to: "sessions#new"
-      post "login", to: "sessions#create"
-      delete "logout", to: "sessions#destroy"
-    end
   end
 end

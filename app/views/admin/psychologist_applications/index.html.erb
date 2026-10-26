@@ -1,0 +1,58 @@
+
+<h1>Заявки на профиль психолога</h1>
+
+<% if @applications.any? %>
+  <% @applications.each do |application| %>
+    <article class="card" style="margin-bottom: 20px;">
+      <h2><%= application.user.name %></h2>
+
+      <p>
+        <strong>E-mail:</strong>
+        <%= application.user.email %>
+      </p>
+
+      <p>
+        <strong>Специализация:</strong>
+        <%= application.specialization %>
+      </p>
+
+      <p>
+        <strong>Опыт работы:</strong>
+        <%= application.experience_years %> лет
+      </p>
+
+      <p>
+        <strong>Стоимость сеанса:</strong>
+        <%= number_to_currency(
+              application.price_per_session,
+              unit: "₽",
+              precision: 0,
+              format: "%n %u"
+            ) %>
+      </p>
+
+      <p>
+        <strong>Длительность сеанса:</strong>
+        <%= application.session_duration %> минут
+      </p>
+
+      <p><%= application.bio %></p>
+
+      <div style="display: flex; gap: 10px;">
+        <%= button_to "Одобрить",
+                      admin_psychologist_application_path(application),
+                      method: :patch,
+                      params: { status: "approved" },
+                      class: "btn btn-primary" %>
+
+        <%= button_to "Отклонить",
+                      admin_psychologist_application_path(application),
+                      method: :patch,
+                      params: { status: "rejected" },
+                      class: "btn btn-secondary" %>
+      </div>
+    </article>
+  <% end %>
+<% else %>
+  <p>Нет заявок на рассмотрении.</p>
+<% end %>

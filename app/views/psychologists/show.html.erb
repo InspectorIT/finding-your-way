@@ -1,0 +1,52 @@
+<div class="psychologist-profile-page">
+  <%= link_to "← К специалистам",
+              root_path(anchor: "psychologists"),
+              class: "btn btn-secondary" %>
+
+  <section class="card psychologist-profile">
+    <% if @psychologist.photo.attached? %>
+      <%= image_tag @psychologist.photo,
+                    alt: "Фотография: #{@psychologist.user.name}",
+                    class: "psychologist-profile__photo" %>
+    <% else %>
+      <div class="psychologist-card__photo-placeholder psychologist-profile__photo-placeholder">
+        <%= @psychologist.user.name.split.map { |part| part[0] }.first(2).join.upcase %>
+      </div>
+    <% end %>
+
+    <h1><%= @psychologist.user.name %></h1>
+
+    <p class="psychologist-card__specialization">
+      <%= @psychologist.specialization %>
+    </p>
+
+    <h2>О специалисте</h2>
+    <%= simple_format(@psychologist.bio) %>
+
+    <div class="psychologist-profile__facts">
+      <p>
+        <strong>Опыт работы:</strong>
+        <%= @psychologist.experience_years %> лет
+      </p>
+
+      <p>
+        <strong>Стоимость сеанса:</strong>
+        <%= number_to_currency(
+              @psychologist.price_per_session,
+              unit: "₽",
+              precision: 0,
+              format: "%n %u"
+            ) %>
+      </p>
+
+      <p>
+        <strong>Длительность сеанса:</strong>
+        <%= @psychologist.session_duration %> минут
+      </p>
+    </div>
+
+    <%= render "psychologists/booking_dialog",
+               profile: @psychologist,
+               home_page: false %>
+  </section>
+</div>

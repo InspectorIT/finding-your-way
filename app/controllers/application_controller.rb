@@ -20,4 +20,17 @@ class ApplicationController < ActionController::Base
       render json: { error: "Необходимо авторизоваться" }, status: :unauthorized
     end
   end
+
+  private
+
+  def calendar_week_start(week_offset)
+    today = Time.zone.today
+    week_start = today.beginning_of_week
+
+    # Если рабочая неделя уже закончилась,
+    # начинаем с ближайшего понедельника.
+    week_start += 1.week if week_start + 4.days < today
+
+    week_start + week_offset.weeks
+  end
 end

@@ -1,16 +1,50 @@
-<div style="text-align: center; margin-top: 50px;">
+<section class="home-hero">
   <h1>Добро пожаловать в Finding Your Way</h1>
-  <p style="font-size: 1.2em; color: #555;">
+
+  <p>
     Платформа для поиска своего психолога и удобной записи на сеансы.
   </p>
 
-  <% unless logged_in? %>
-    <div style="margin-top: 30px;">
-      <%= link_to "Найти психолога", "#", class: "btn btn-primary", style: "font-size: 1.2em; padding: 15px 30px;" %>
+  <%= link_to "Найти специалиста",
+              root_path(anchor: "psychologists"),
+              class: "btn btn-primary home-hero__button" %>
+</section>
+
+<section id="psychologists" class="home-psychologists">
+  <h2>Наши психологи</h2>
+
+  <p>Выберите специалиста, который подходит именно вам.</p>
+
+  <% if @psychologists.any? %>
+    <div class="psychologists-grid">
+      <% @psychologists.each do |profile| %>
+        <article class="card psychologist-card"
+                 id="psychologist-<%= profile.id %>">
+
+          <% if profile.photo.attached? %>
+            <%= image_tag profile.photo,
+                          alt: "Фотография: #{profile.user.name}",
+                          class: "psychologist-card__photo" %>
+          <% else %>
+            <div class="psychologist-card__photo-placeholder"
+                 aria-label="Фотография ещё не добавлена">
+              <%= profile.user.name.split.map { |part| part[0] }.first(2).join.upcase %>
+            </div>
+          <% end %>
+
+          <h3><%= profile.user.name %></h3>
+
+          <%= link_to "Подробнее о специалисте",
+                      psychologist_path(profile),
+                      class: "btn btn-secondary psychologist-card__details-toggle" %>
+
+          <%= render "psychologists/booking_dialog",
+                     profile: profile,
+                     home_page: true %>
+        </article>
+    <% end %>
     </div>
   <% else %>
-    <div style="margin-top: 30px;">
-      <%= link_to "Перейти в личный кабинет", "#", class: "btn btn-secondary" %>
-    </div>
+    <p>Пока нет одобренных психологов.</p>
   <% end %>
-</div>
+</section>

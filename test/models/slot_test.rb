@@ -99,7 +99,6 @@ class SlotTest < ActiveSupport::TestCase
     appointment = Appointment.create!(
       client: client,
       slot: slot,
-      status: :pending
     )
 
     assert_equal appointment, slot.appointment

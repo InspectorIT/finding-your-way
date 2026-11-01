@@ -18,7 +18,8 @@
   <% end %>
 
   <%= form_with model: @psychologist_profile,
-                url: psychologist_applications_path do |form| %>
+                url: psychologist_applications_path,
+                method: :post do |form| %>
     <div class="form-group">
       <%= form.label :photo, "Фотография специалиста" %>
       <%= form.file_field :photo,

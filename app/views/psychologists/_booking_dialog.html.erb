@@ -164,12 +164,15 @@
                   </span>
                 </div>
 
-                <div class="slot-calendar__slots">
+                <div
+                  class="slot-calendar__slots"
+                  id="psychologist_<%= profile.id %>_slots_<%= day.iso8601 %>"
+                >
                   <% if day_slots.empty? %>
 
-                    <div class="slot-calendar__empty">
-                      Нет слотов
-                    </div>
+                    <%= render "psychologists/empty_day_slots",
+                               profile: profile,
+                               day: day %>
 
                   <% else %>
                     <% day_slots.sort_by(&:start_time).each do |slot| %>

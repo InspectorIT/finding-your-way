@@ -113,6 +113,41 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
                          )
   end
 
+  test "editing a slot broadcasts its removal and insertion" do
+    # Подготовка данных
+
+    broadcasts = capture_turbo_stream_broadcasts(
+      [profile, :availability]
+    ) do
+      # Запрос на редактирование слота
+    end
+
+    # Проверки broadcasts
+    assert_equal %w[remove before],
+                 broadcasts.map { |broadcast| broadcast["action"] }
+
+    assert_equal "slot_#{slot.id}",
+                 broadcasts.first["target"]
+
+    assert_equal "slot_#{next_slot.id}",
+                 broadcasts.last["target"]
+  end
+
+  test "deleting the last slot broadcasts empty day" do
+    # Подготовка данных
+
+    broadcasts = capture_turbo_stream_broadcasts(
+      [profile, :availability]
+    ) do
+      # Запрос на удаление слота
+    end
+
+    assert_equal %w[remove append],
+                 broadcasts.map { |broadcast| broadcast["action"] }
+
+    assert_includes broadcasts.last.inner_html, "Нет слотов"
+  end
+
   private
 
   def create_user(email:, name:, phone:, role:)

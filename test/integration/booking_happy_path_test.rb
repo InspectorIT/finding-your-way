@@ -161,7 +161,7 @@ class BookingHappyPathTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
     assert_includes response.body, "Вы записаны на сеанс."
-    assert_includes response.body, "занято"
+    assert_includes response.body, "Ваша запись"
 
     # 8. Клиент видит запись в личном кабинете.
     get account_url

@@ -1,0 +1,19 @@
+<% profile = slot.psychologist_profile %>
+
+<%= turbo_frame_tag dom_id(slot), target: "_top" do %>
+  <%= link_to psychologist_path(
+                profile,
+                calendar: profile.id,
+                anchor: "psychologist-#{profile.id}-calendar"
+              ),
+              class: "slot-item slot-item--available" do %>
+
+    <span class="slot-item__time">
+      <%= slot.start_time.strftime("%H:%M") %>
+    </span>
+
+    <span class="slot-item__status">
+      Свободно · выбрать время
+    </span>
+  <% end %>
+<% end %>

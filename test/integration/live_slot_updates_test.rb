@@ -150,7 +150,7 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
     )
 
     broadcasts = capture_turbo_stream_broadcasts(
-      [profile, :availability]
+      [ profile, :availability ]
     ) do
       assert_difference("Slot.count", 1) do
         post slots_url, params: {
@@ -218,7 +218,7 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
     new_start_time = start_time + 1.hour
 
     broadcasts = capture_turbo_stream_broadcasts(
-      [profile, :availability]
+      [ profile, :availability ]
     ) do
       patch slot_url(slot), params: {
         week: 0,
@@ -272,7 +272,7 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
     }
 
     broadcasts = capture_turbo_stream_broadcasts(
-      [profile, :availability]
+      [ profile, :availability ]
     ) do
       assert_difference("Slot.count", -1) do
         delete slot_url(slot), params: {

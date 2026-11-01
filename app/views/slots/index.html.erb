@@ -141,12 +141,36 @@
                   </span>
                 </div>
               <% else %>
-                <div class="slot-item slot-item--available">
+                <div class="slot-item slot-item--available slot-item--manageable">
                   <span class="slot-item__time">
                     <%= slot.start_time.strftime("%H:%M") %>
                   </span>
 
                   <span class="slot-item__status">Свободно</span>
+
+                  <details class="slot-actions">
+                    <summary
+                      class="slot-actions__toggle"
+                      aria-label="Действия со слотом"
+                      title="Действия"
+                    >
+                      <span aria-hidden="true">⋮</span>
+                    </summary>
+
+                    <div class="slot-actions__menu">
+                      <%= link_to "Изменить",
+                                  edit_slot_path(slot, week: @week_offset),
+                                  class: "slot-actions__item" %>
+
+                      <%= button_to "Удалить",
+                                    slot_path(slot),
+                                    method: :delete,
+                                    params: { week: @week_offset },
+                                    data: { turbo_confirm: "Удалить этот свободный сеанс?" },
+                                    form: { class: "slot-actions__form" },
+                                    class: "slot-actions__item slot-actions__item--danger" %>
+                    </div>
+                  </details>
                 </div>
               <% end %>
             <% end %>

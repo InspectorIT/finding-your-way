@@ -113,6 +113,190 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
                          )
   end
 
+  test "creating a slot broadcasts it to the psychologist calendar" do
+    psychologist = create_user(
+      email: "create-slot-psychologist@example.com",
+      name: "Анна Петрова",
+      phone: "+79990000201",
+      role: :psychologist
+    )
+
+    profile = create_profile(psychologist)
+
+    start_time = 2.days.from_now.change(
+      hour: 10,
+      min: 0,
+      sec: 0,
+      usec: 0
+    )
+
+    post auth_login_url, params: {
+      email: psychologist.email,
+      password: PASSWORD
+    }
+
+    assert_redirected_to root_url
+
+    # Проверяем страницу с календарём и подписку.
+    get psychologist_url(profile)
+
+    assert_response :success
+    assert_select "turbo-cable-stream-source"
+
+    date = start_time.to_date
+
+    assert_select(
+      "#psychologist_#{profile.id}_slots_#{date.iso8601}"
+    )
+
+    broadcasts = capture_turbo_stream_broadcasts(
+      [ profile, :availability ]
+    ) do
+      assert_difference("Slot.count", 1) do
+        post slots_url, params: {
+          slot: {
+            start_time: start_time.iso8601,
+            end_time: (start_time + 50.minutes).iso8601
+          }
+        }
+      end
+    end
+
+    assert_redirected_to slots_url
+
+    # Удаление заглушки и добавление нового слота.
+    assert_equal %w[remove append],
+                 broadcasts.map { |broadcast| broadcast["action"] }
+
+    assert_equal(
+      "empty_psychologist_#{profile.id}_slots_#{date.iso8601}",
+      broadcasts.first["target"]
+    )
+
+    assert_equal(
+      "psychologist_#{profile.id}_slots_#{date.iso8601}",
+      broadcasts.last["target"]
+    )
+
+    assert_includes broadcasts.last.inner_html, "Свободно"
+    assert_includes broadcasts.last.inner_html,
+                    start_time.strftime("%H:%M")
+  end
+
+  test "editing a slot broadcasts its removal and insertion" do
+    psychologist = create_user(
+      email: "edit-slot-psychologist@example.com",
+      name: "Психолог для редактирования",
+      phone: "+79990000301",
+      role: :psychologist
+    )
+
+    profile = create_profile(psychologist)
+
+    start_time = 2.days.from_now.change(
+      hour: 10,
+      min: 0,
+      sec: 0,
+      usec: 0
+    )
+
+    slot = profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + 50.minutes
+    )
+
+    next_slot = profile.slots.create!(
+      start_time: start_time + 2.hours,
+      end_time: start_time + 2.hours + 50.minutes
+    )
+
+    post auth_login_url, params: {
+      email: psychologist.email,
+      password: PASSWORD
+    }
+
+    new_start_time = start_time + 1.hour
+
+    broadcasts = capture_turbo_stream_broadcasts(
+      [ profile, :availability ]
+    ) do
+      patch slot_url(slot), params: {
+        week: 0,
+        slot: {
+          start_time: new_start_time.iso8601,
+          end_time: (new_start_time + 50.minutes).iso8601
+        }
+      }
+    end
+
+    assert_redirected_to slots_path(week: 0)
+
+    assert_equal %w[remove before],
+                 broadcasts.map { |broadcast| broadcast["action"] }
+
+    assert_equal "slot_#{slot.id}",
+                 broadcasts.first["target"]
+
+    assert_equal "slot_#{next_slot.id}",
+                 broadcasts.last["target"]
+
+    assert_equal new_start_time.to_i,
+                 slot.reload.start_time.to_i
+  end
+
+  test "deleting the last slot broadcasts empty day" do
+    psychologist = create_user(
+      email: "delete-slot-psychologist@example.com",
+      name: "Психолог для удаления",
+      phone: "+79990000302",
+      role: :psychologist
+    )
+
+    profile = create_profile(psychologist)
+
+    start_time = 2.days.from_now.change(
+      hour: 10,
+      min: 0,
+      sec: 0,
+      usec: 0
+    )
+
+    slot = profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + 50.minutes
+    )
+
+    post auth_login_url, params: {
+      email: psychologist.email,
+      password: PASSWORD
+    }
+
+    broadcasts = capture_turbo_stream_broadcasts(
+      [ profile, :availability ]
+    ) do
+      assert_difference("Slot.count", -1) do
+        delete slot_url(slot), params: {
+          week: 0
+        }
+      end
+    end
+
+    assert_redirected_to slots_path(week: 0)
+
+    assert_equal %w[remove append],
+                 broadcasts.map { |broadcast| broadcast["action"] }
+
+    assert_equal "slot_#{slot.id}",
+                 broadcasts.first["target"]
+
+    assert_equal(
+      "psychologist_#{profile.id}_slots_#{start_time.to_date.iso8601}",
+      broadcasts.last["target"]
+    )
+
+    assert_includes broadcasts.last.inner_html, "Нет слотов"
+  end
+
   private
 
   def create_user(email:, name:, phone:, role:)
@@ -143,7 +327,10 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
       email: [
         PSYCHOLOGIST_EMAIL,
         OTHER_PSYCHOLOGIST_EMAIL,
-        CLIENT_EMAIL
+        CLIENT_EMAIL,
+        "create-slot-psychologist@example.com",
+        "edit-slot-psychologist@example.com",
+        "delete-slot-psychologist@example.com"
       ]
     ).pluck(:id)
 

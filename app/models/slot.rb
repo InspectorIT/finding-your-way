@@ -4,6 +4,10 @@ class Slot < ApplicationRecord
 
   has_one :appointment, dependent: :restrict_with_error
 
+  after_create_commit :broadcast_slot_creation
+  after_update_commit :broadcast_slot_update
+  after_destroy_commit :broadcast_slot_removal
+
   validates :start_time, :end_time, presence: true
 
   validate :end_time_after_start_time
@@ -41,5 +45,122 @@ class Slot < ApplicationRecord
     ).exists?
 
     errors.add(:base, "Время пересекается с другим слотом") if overlapping
+  end
+
+  def broadcast_slot_creation
+    # Убираем надпись «Нет слотов», если день был пустым.
+    broadcast_remove_to(
+      psychologist_profile,
+      :availability,
+      target: empty_day_dom_id(start_time.to_date)
+    )
+
+    # Вставляем новый слот на правильное место.
+    broadcast_insert_slot
+  end
+
+  def broadcast_slot_update
+    return broadcast_available_slot unless saved_change_to_start_time?
+
+    previous_start_time = saved_change_to_start_time.first
+    previous_date = previous_start_time.to_date
+    current_date = start_time.to_date
+
+    broadcast_remove_slot
+
+    if previous_date != current_date
+      broadcast_empty_day(previous_date)
+
+      broadcast_remove_to(
+        psychologist_profile,
+        :availability,
+        target: empty_day_dom_id(current_date)
+      )
+    end
+
+    broadcast_insert_slot
+  end
+
+  def broadcast_available_slot
+    broadcast_replace_to(
+      psychologist_profile,
+      :availability,
+      target: slot_dom_id,
+      partial: "psychologists/available_slot",
+      locals: { slot: self }
+    )
+  end
+
+  def broadcast_slot_removal
+    broadcast_remove_slot
+    broadcast_empty_day(start_time.to_date)
+  end
+
+  def broadcast_remove_slot
+    broadcast_remove_to(
+      psychologist_profile,
+      :availability,
+      target: slot_dom_id
+    )
+  end
+
+  def broadcast_insert_slot
+    next_slot = psychologist_profile.slots
+                                    .where(start_time: start_time.to_date.all_day)
+                                    .where("slots.start_time > ?", start_time)
+                                    .order(:start_time)
+                                    .first
+
+    rendering = {
+      partial: "psychologists/available_slot",
+      locals: { slot: self }
+    }
+
+    if next_slot
+      broadcast_before_to(
+        psychologist_profile,
+        :availability,
+        target: "slot_#{next_slot.id}",
+        **rendering
+      )
+    else
+      broadcast_append_to(
+        psychologist_profile,
+        :availability,
+        target: calendar_day_dom_id(start_time.to_date),
+        **rendering
+      )
+    end
+  end
+
+  def broadcast_empty_day(date)
+    remaining_slots = psychologist_profile.slots
+                                          .where(start_time: date.all_day)
+                                          .where("slots.start_time > ?", Time.current)
+
+    return if remaining_slots.exists?
+
+    broadcast_append_to(
+      psychologist_profile,
+      :availability,
+      target: calendar_day_dom_id(date),
+      partial: "psychologists/empty_day_slots",
+      locals: {
+        profile: psychologist_profile,
+        day: date
+      }
+    )
+  end
+
+  def slot_dom_id
+    "slot_#{id}"
+  end
+
+  def calendar_day_dom_id(date)
+    "psychologist_#{psychologist_id}_slots_#{date.iso8601}"
+  end
+
+  def empty_day_dom_id(date)
+    "empty_#{calendar_day_dom_id(date)}"
   end
 end

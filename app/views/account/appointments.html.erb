@@ -32,6 +32,9 @@
               <%= slot.start_time.strftime("%H:%M") %>–<%= slot.end_time.strftime("%H:%M") %>
             </p>
           </article>
+
+          <%= render "appointment_actions", appointment: appointment %>
+
         <% end %>
       </div>
     <% else %>
@@ -69,6 +72,9 @@
               <%= slot.start_time.strftime("%H:%M") %>–<%= slot.end_time.strftime("%H:%M") %>
             </p>
           </article>
+
+          <%= render "appointment_actions", appointment: appointment %>
+
         <% end %>
       </div>
     <% else %>

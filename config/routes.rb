@@ -6,9 +6,9 @@ Rails.application.routes.draw do
       to: "account#appointments",
       as: :account_appointments
   resources :psychologists, only: [ :index, :show ]
-  resources :appointments, only: [ :create ]
+  resources :appointments, only: %i[create update destroy]
   resources :psychologist_applications, only: [ :new, :create ]
-  resources :slots, only: [ :index, :create ]
+  resources :slots, only: %i[index create edit update destroy]
 
   namespace :admin do
     resources :psychologist_applications, only: [ :index, :update ]

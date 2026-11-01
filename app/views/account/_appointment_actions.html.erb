@@ -1,0 +1,13 @@
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+  <%= link_to "Выбрать другое время",
+              root_path(anchor: "psychologists"),
+              class: "btn btn-secondary" %>
+
+  <%= button_to "Отменить запись",
+                appointment_path(appointment),
+                method: :delete,
+                data: {
+                  turbo_confirm: "Вы действительно хотите отменить запись?"
+                },
+                class: "btn btn-danger" %>
+</div>

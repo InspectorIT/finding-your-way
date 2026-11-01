@@ -164,12 +164,15 @@
                   </span>
                 </div>
 
-                <div class="slot-calendar__slots">
+                <div
+                  class="slot-calendar__slots"
+                  id="psychologist_<%= profile.id %>_slots_<%= day.iso8601 %>"
+                >
                   <% if day_slots.empty? %>
 
-                    <div class="slot-calendar__empty">
-                      Нет слотов
-                    </div>
+                    <%= render "psychologists/empty_day_slots",
+                               profile: profile,
+                               day: day %>
 
                   <% else %>
                     <% day_slots.sort_by(&:start_time).each do |slot| %>
@@ -177,45 +180,80 @@
 
                         <% if slot.appointment.present? %>
 
-                          <!-- Слот уже забронирован -->
-                          <div class="slot-item slot-item--booked">
-                            <span class="slot-item__time">
-                              <%= slot.start_time.strftime("%H:%M") %>
-                            </span>
+                          <% if logged_in? && slot.appointment.client_id == current_user.id %>
+                            <div class="slot-item slot-item--booked">
+                              <span class="slot-item__time">
+                                <%= slot.start_time.strftime("%H:%M") %>
+                              </span>
 
-                            <span class="slot-item__status">
-                              занято
-                            </span>
-                          </div>
+                              <span class="slot-item__status">
+                                Ваша запись
+                              </span>
+                            </div>
+                          <% else %>
+                            <div class="slot-item slot-item--booked">
+                              <span class="slot-item__time">
+                                <%= slot.start_time.strftime("%H:%M") %>
+                              </span>
+
+                              <span class="slot-item__status">
+                                Занято
+                              </span>
+                            </div>
+                          <% end %>
 
                         <% elsif logged_in? &&
                                  (current_user.client? || current_user.psychologist?) &&
                                  current_user.id != profile.user_id %>
 
-                          <!-- Свободный слот: записываем клиента -->
-                          <%= button_to appointments_path,
-                                        method: :post,
-                                        params: {
-                                          slot_id: slot.id,
-                                          return_to_home: home_page ? "1" : "0",
-                                          week: @week_offset
-                                        },
-                                        class: "slot-item slot-item--available",
-                                        form: {
-                                          class: "slot-calendar__booking-form"
-                                        } do %>
-                            <span class="slot-item__time">
-                              <%= slot.start_time.strftime("%H:%M") %>
-                            </span>
+                          <% if current_appointment.present? %>
 
-                            <span class="slot-item__status">
-                              Записаться
-                            </span>
+                            <%= button_to appointment_path(current_appointment),
+                                          method: :patch,
+                                          params: {
+                                            slot_id: slot.id,
+                                            return_to_home: home_page ? "1" : "0",
+                                            week: @week_offset
+                                          },
+                                          class: "slot-item slot-item--available",
+                                          form: {
+                                            class: "slot-calendar__booking-form"
+                                          } do %>
+                              <span class="slot-item__time">
+                                <%= slot.start_time.strftime("%H:%M") %>
+                              </span>
+
+                              <span class="slot-item__status">
+                                Перенести на это время
+                              </span>
+                            <% end %>
+
+                          <% else %>
+
+                            <%= button_to appointments_path,
+                                          method: :post,
+                                          params: {
+                                            slot_id: slot.id,
+                                            return_to_home: home_page ? "1" : "0",
+                                            week: @week_offset
+                                          },
+                                          class: "slot-item slot-item--available",
+                                          form: {
+                                            class: "slot-calendar__booking-form"
+                                          } do %>
+                              <span class="slot-item__time">
+                                <%= slot.start_time.strftime("%H:%M") %>
+                              </span>
+
+                              <span class="slot-item__status">
+                                Записаться
+                              </span>
+                            <% end %>
+
                           <% end %>
 
                         <% elsif !logged_in? %>
 
-                          <!-- Для гостя предлагаем войти -->
                           <%= link_to auth_login_path,
                                       class: "slot-item slot-item--available" do %>
                             <span class="slot-item__time">
@@ -229,7 +267,6 @@
 
                         <% else %>
 
-                          <!-- Сам специалист и другие роли не бронируют слот -->
                           <div class="slot-item slot-item--booked">
                             <span class="slot-item__time">
                               <%= slot.start_time.strftime("%H:%M") %>

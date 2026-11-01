@@ -17,4 +17,13 @@ module ApplicationHelper
       )
     end
   end
+
+  def current_appointment
+    return unless logged_in? &&
+                  (current_user.client? || current_user.psychologist?)
+
+    return @current_appointment if defined?(@current_appointment)
+
+    @current_appointment = current_user.appointments.first
+  end
 end

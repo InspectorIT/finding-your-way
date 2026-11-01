@@ -72,7 +72,7 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
 
     # 5. Бронируем слот и перехватываем Turbo Stream broadcast.
     broadcasts = capture_turbo_stream_broadcasts(
-      [profile, :availability]
+      [ profile, :availability ]
     ) do
       assert_difference("Appointment.count", 1) do
         post appointments_url, params: {
@@ -103,7 +103,7 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
     # 8. Убедимся, что календарь другого психолога
     # не получил это обновление.
     assert_no_turbo_stream_broadcasts(
-      [other_profile, :availability]
+      [ other_profile, :availability ]
     )
 
     assert_redirected_to psychologist_url(

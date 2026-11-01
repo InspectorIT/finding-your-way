@@ -4,6 +4,7 @@ class Slot < ApplicationRecord
 
   has_one :appointment, dependent: :restrict_with_error
 
+  after_create_commit :broadcast_slot_creation
   after_update_commit :broadcast_slot_update
   after_destroy_commit :broadcast_slot_removal
 
@@ -44,6 +45,18 @@ class Slot < ApplicationRecord
     ).exists?
 
     errors.add(:base, "Время пересекается с другим слотом") if overlapping
+  end
+
+  def broadcast_slot_creation
+    # Убираем надпись «Нет слотов», если день был пустым.
+    broadcast_remove_to(
+      psychologist_profile,
+      :availability,
+      target: empty_day_dom_id(start_time.to_date)
+    )
+
+    # Вставляем новый слот на правильное место.
+    broadcast_insert_slot
   end
 
   def broadcast_slot_update

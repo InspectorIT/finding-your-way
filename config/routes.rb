@@ -36,4 +36,8 @@ Rails.application.routes.draw do
     post "login", to: "sessions#create"          # Обрабатывает вход
     delete "logout", to: "sessions#destroy"      # Обрабатывает выход
   end
+
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
 end

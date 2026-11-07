@@ -1,0 +1,24 @@
+<h1>Клиент перенёс запись</h1>
+
+<p>
+  Здравствуйте, <strong><%= @notification[:psychologist_name] %></strong>!
+</p>
+
+<p>
+  Клиент <strong><%= @notification[:client_name] %></strong>
+  перенёс запись на другое время.
+</p>
+
+<h2>Прежнее время</h2>
+
+<p>
+  <%= @notification[:previous_date] %>,
+  <%= @notification[:previous_start_time] %>–<%= @notification[:previous_end_time] %>
+</p>
+
+<h2>Новое время</h2>
+
+<p>
+  <%= @notification[:date] %>,
+  <%= @notification[:start_time] %>–<%= @notification[:end_time] %>
+</p>

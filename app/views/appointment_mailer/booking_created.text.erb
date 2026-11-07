@@ -1,0 +1,11 @@
+Новая запись на консультацию
+
+Здравствуйте, <%= @notification[:psychologist_name] %>!
+
+К вам записался клиент: <%= @notification[:client_name] %>.
+
+Специализация: <%= @notification[:specialization] %>
+Дата: <%= @notification[:date] %>
+Время: <%= @notification[:start_time] %>–<%= @notification[:end_time] %>
+
+Информация о записи доступна в личном кабинете.

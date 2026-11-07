@@ -1,0 +1,13 @@
+Клиент перенёс запись
+
+Здравствуйте, <%= @notification[:psychologist_name] %>!
+
+Клиент <%= @notification[:client_name] %> перенёс запись.
+
+Прежнее время:
+<%= @notification[:previous_date] %>,
+<%= @notification[:previous_start_time] %>–<%= @notification[:previous_end_time] %>
+
+Новое время:
+<%= @notification[:date] %>,
+<%= @notification[:start_time] %>–<%= @notification[:end_time] %>

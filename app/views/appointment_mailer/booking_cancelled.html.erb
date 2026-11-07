@@ -1,0 +1,21 @@
+<h1>Запись отменена</h1>
+
+<p>
+  Здравствуйте, <strong><%= @notification[:psychologist_name] %></strong>!
+</p>
+
+<p>
+  Клиент <strong><%= @notification[:client_name] %></strong>
+  отменил запись.
+</p>
+
+<p>
+  <strong>Дата:</strong> <%= @notification[:date] %>
+</p>
+
+<p>
+  <strong>Освободившееся время:</strong>
+  <%= @notification[:start_time] %>–<%= @notification[:end_time] %>
+</p>
+
+<p>Это время снова доступно для записи.</p>

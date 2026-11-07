@@ -1,0 +1,26 @@
+<h1>Новая запись на консультацию</h1>
+
+<p>
+  Здравствуйте, <strong><%= @notification[:psychologist_name] %></strong>!
+</p>
+
+<p>
+  К вам записался клиент:
+  <strong><%= @notification[:client_name] %></strong>.
+</p>
+
+<p>
+  <strong>Специализация:</strong>
+  <%= @notification[:specialization] %>
+</p>
+
+<p>
+  <strong>Дата:</strong> <%= @notification[:date] %>
+</p>
+
+<p>
+  <strong>Время:</strong>
+  <%= @notification[:start_time] %>–<%= @notification[:end_time] %>
+</p>
+
+<p>Информация о записи доступна в личном кабинете.</p>

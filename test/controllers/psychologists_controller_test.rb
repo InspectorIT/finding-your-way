@@ -58,24 +58,26 @@ class PsychologistsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show displays approved psychologist and available slots" do
-    profile = create_profile(
-      name: "Анна Петрова",
-      email: "anna-show@example.com",
-      status: :approved
-    )
-    starts_at = 1.day.from_now.change(sec: 0)
-    slot = create_slot(profile, starts_at: starts_at)
+    travel_to Time.zone.local(2026, 11, 2, 9, 0, 0) do
+      profile = create_profile(
+        name: "Анна Петрова",
+        email: "anna-show@example.com",
+        status: :approved
+      )
+      starts_at = 1.day.from_now.change(sec: 0)
+      slot = create_slot(profile, starts_at: starts_at)
 
-    get psychologist_url(profile)
+      get psychologist_url(profile)
 
-    assert_response :success
-    assert_select "h1", "Анна Петрова"
-    assert_includes response.body, "Клиническая психология"
-    assert_select ".slot-calendar__day-date",
-                  text: slot.start_time.strftime("%d.%m")
+      assert_response :success
+      assert_select "h1", "Анна Петрова"
+      assert_includes response.body, "Клиническая психология"
+      assert_select ".slot-calendar__day-date",
+                    text: slot.start_time.strftime("%d.%m")
 
-    assert_select ".slot-item__time",
-                  text: slot.start_time.strftime("%H:%M")
+      assert_select ".slot-item__time",
+                    text: slot.start_time.strftime("%H:%M")
+    end
   end
 
   test "show does not expose a pending profile" do

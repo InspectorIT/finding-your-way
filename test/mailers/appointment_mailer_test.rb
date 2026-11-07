@@ -18,7 +18,7 @@ class AppointmentMailerTest < ActionMailer::TestCase
               .with(notification: @notification)
               .booking_created
 
-    assert_equal ["psychologist@example.com"], email.to
+    assert_equal [ "psychologist@example.com" ], email.to
     assert_equal "Новая запись на консультацию", email.subject
 
     body = decoded_text(email)
@@ -33,7 +33,7 @@ class AppointmentMailerTest < ActionMailer::TestCase
               .with(notification: @notification)
               .booking_cancelled
 
-    assert_equal ["psychologist@example.com"], email.to
+    assert_equal [ "psychologist@example.com" ], email.to
     assert_equal "Клиент отменил запись", email.subject
 
     body = decoded_text(email)
@@ -54,7 +54,7 @@ class AppointmentMailerTest < ActionMailer::TestCase
               .with(notification: notification)
               .booking_rescheduled
 
-    assert_equal ["psychologist@example.com"], email.to
+    assert_equal [ "psychologist@example.com" ], email.to
     assert_equal "Клиент перенёс запись", email.subject
 
     body = decoded_text(email)

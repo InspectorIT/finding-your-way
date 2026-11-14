@@ -6,6 +6,17 @@
     <article class="card" style="margin-bottom: 20px;">
       <h2><%= application.user.name %></h2>
 
+      <div class="admin-application-photo">
+        <% if application.photo.attached? %>
+          <%= image_tag application.photo,
+                        alt: "Фотография: #{application.user.name}" %>
+        <% else %>
+          <div class="admin-application-photo__placeholder">
+            <%= application.user.name.split.map { |part| part[0] }.first(2).join.upcase %>
+          </div>
+        <% end %>
+      </div>
+
       <p>
         <strong>E-mail:</strong>
         <%= application.user.email %>

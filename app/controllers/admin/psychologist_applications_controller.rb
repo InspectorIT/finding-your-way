@@ -6,6 +6,7 @@ class Admin::PsychologistApplicationsController < ApplicationController
   def index
     @applications = PsychologistProfile.pending
                                        .includes(:user)
+                                       .with_attached_photo
                                        .order(:created_at)
   end
 

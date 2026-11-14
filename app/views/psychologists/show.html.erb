@@ -4,15 +4,17 @@
               class: "btn btn-secondary" %>
 
   <section class="card psychologist-profile">
-    <% if @psychologist.photo.attached? %>
-      <%= image_tag @psychologist.photo,
-                    alt: "Фотография: #{@psychologist.user.name}",
-                    class: "psychologist-profile__photo" %>
-    <% else %>
-      <div class="psychologist-card__photo-placeholder psychologist-profile__photo-placeholder">
-        <%= @psychologist.user.name.split.map { |part| part[0] }.first(2).join.upcase %>
-      </div>
-    <% end %>
+    <div class="psychologist-profile__image">
+      <% if @psychologist.photo.attached? %>
+        <%= image_tag @psychologist.photo,
+                      alt: "Фотография: #{@psychologist.user.name}",
+                      class: "psychologist-profile__photo" %>
+      <% else %>
+        <div class="psychologist-profile__photo-placeholder">
+          <%= @psychologist.user.name.split.map { |part| part[0] }.first(2).join.upcase %>
+        </div>
+      <% end %>
+    </div>
 
     <h1><%= @psychologist.user.name %></h1>
 

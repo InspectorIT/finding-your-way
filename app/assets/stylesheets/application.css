@@ -552,21 +552,6 @@ html {
     margin-bottom: 16px;
 }
 
-/* Большая фотография в профиле психолога */
-.psychologist-profile__photo {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    max-height: 520px;
-    aspect-ratio: auto;
-    object-fit: contain;
-    object-position: center;
-    border-radius: 14px;
-    margin: 0 auto 20px;
-    background: #f8fafc;
-}
-
 /* Большая кнопка записи */
 .psychologist-booking__toggle {
     display: block;
@@ -939,9 +924,94 @@ html {
     text-align: center;
 }
 
-/* Заглушка на отдельной странице психолога */
-.psychologist-profile__photo-placeholder {
+/* Единая область изображения на странице психолога */
+.psychologist-profile__image {
+    width: 100%;
     max-width: 420px;
-    min-height: 280px;
-    margin: 0 auto 20px;
+    aspect-ratio: 4 / 3;
+    margin: 0 auto 24px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #dcece5, #e8eaf2);
+}
+
+/* Фотография заполняет область */
+.psychologist-profile__photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 14px;
+}
+
+/* Заглушка занимает точно такую же область */
+.psychologist-profile__photo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    color: #2c3e50;
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #dcece5, #e8eaf2);
+}
+
+.photo-crop-preview {
+    width: 100%;
+    max-width: 500px;
+    height: 360px;
+    margin: 15px 0;
+    overflow: hidden;
+    background: #f1f5f9;
+    border-radius: 12px;
+}
+
+.photo-crop-preview img {
+    display: block;
+    max-width: 100%;
+}
+
+.photo-crop-preview + button {
+    margin-top: 10px;
+}
+
+.admin-application-photo {
+    width: 100%;
+    max-width: 260px;
+    aspect-ratio: 4 / 3;
+    margin: 16px 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #dcece5, #e8eaf2);
+}
+
+.admin-application-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.admin-application-photo__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #2c3e50;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.photo-crop-warning {
+    color: #b42318;
+    background: #fef3f2;
+    border: 1px solid #fecdca;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 14px;
 }

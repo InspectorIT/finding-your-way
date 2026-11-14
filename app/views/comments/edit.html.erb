@@ -1,0 +1,13 @@
+<section class="comments-section">
+  <h1>Редактирование комментария</h1>
+
+  <%= render "comments/form",
+             psychologist: @psychologist,
+             comment: @comment %>
+
+  <%= link_to "Вернуться к профилю психолога",
+              psychologist_path(
+                @psychologist,
+                anchor: "comments"
+              ) %>
+</section>

@@ -541,46 +541,30 @@ html {
 }
 
 
-/* Фотография специалиста */
-.psychologist-card__photo,
-.psychologist-profile__photo {
+/* Фотографии в карточках на главной */
+.psychologist-card__photo {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+    object-position: center;
     border-radius: 12px;
     margin-bottom: 16px;
 }
 
-.psychologist-card__photo-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    box-sizing: border-box;
-    margin-bottom: 16px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #dcece5, #e8eaf2);
-    color: var(--primary-color);
-    font-size: 3rem;
-    font-weight: 700;
-}
-
-.psychologist-profile {
-    max-width: 850px;
-    margin: 24px auto;
-}
-
+/* Большая фотография в профиле психолога */
 .psychologist-profile__photo {
-    max-height: 420px;
-}
-
-.psychologist-profile__facts {
-    margin: 24px 0;
-    padding: 16px;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 520px;
+    aspect-ratio: auto;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 14px;
+    margin: 0 auto 20px;
     background: #f8fafc;
-    border-radius: 12px;
 }
 
 /* Большая кнопка записи */
@@ -866,4 +850,98 @@ html {
 
 .slot-actions__item--danger {
     color: #b42318;
+}
+
+.comments-section {
+    margin-top: 40px;
+}
+
+.comments-list {
+    display: grid;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.comment {
+    padding: 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.comment__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.comment__header time {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.comment__body {
+    line-height: 1.6;
+}
+
+.comment__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.comment-form-section {
+    margin-top: 30px;
+}
+
+.comment-form {
+    display: grid;
+    gap: 15px;
+}
+
+.comment-form textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.comments-empty {
+    color: #777;
+    padding: 15px 0;
+}
+
+/* Заглушка вместо фотографии психолога */
+.psychologist-card__photo-placeholder {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 180px;
+    aspect-ratio: 4 / 3;
+    box-sizing: border-box;
+
+    margin-bottom: 16px;
+    border-radius: 12px;
+
+    background: linear-gradient(135deg, #dcece5, #e8eaf2);
+    color: #2c3e50;
+
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Заглушка на отдельной странице психолога */
+.psychologist-profile__photo-placeholder {
+    max-width: 420px;
+    min-height: 280px;
+    margin: 0 auto 20px;
 }

@@ -23,6 +23,12 @@ class PsychologistsController < ApplicationController
 
     return head :not_found unless @psychologist
 
+    @comments = @psychologist.comments
+                             .includes(:user)
+                             .order(created_at: :desc)
+
+    @new_comment = @psychologist.comments.build
+
     @week_offset = params.fetch(:week, "0").to_i.clamp(0, 52)
     week_start = calendar_week_start(@week_offset)
 

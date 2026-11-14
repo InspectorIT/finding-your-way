@@ -1,0 +1,32 @@
+<article class="comment" id="comment_<%= comment.id %>">
+  <div id="comment_content_<%= comment.id %>">
+    <%= render "comments/comment_content", comment: comment %>
+  </div>
+
+  <% if local_assigns.fetch(:show_actions, false) &&
+        logged_in? &&
+        current_user.id == comment.user_id %>
+
+    <div class="comment__actions">
+      <%= link_to "Редактировать",
+                  edit_psychologist_comment_path(
+                    comment.psychologist_profile,
+                    comment
+                  ),
+                  class: "btn btn-secondary" %>
+
+      <%= button_to "Удалить",
+                    psychologist_comment_path(
+                      comment.psychologist_profile,
+                      comment
+                    ),
+                    method: :delete,
+                    class: "btn btn-danger",
+                    form: {
+                      data: {
+                        turbo_confirm: "Удалить этот комментарий?"
+                      }
+                    } %>
+    </div>
+  <% end %>
+</article>

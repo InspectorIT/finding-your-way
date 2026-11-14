@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   before_action :ensure_logged_in
   before_action :set_psychologist
-  before_action :ensure_client, only: :create
+  before_action :ensure_client
   before_action :set_comment, only: %i[edit update destroy]
 
   def create

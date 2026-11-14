@@ -1,0 +1,20 @@
+<%= form_with url: psychologist_comments_path(psychologist),
+              scope: :comment,
+              method: :post,
+              local: true,
+              class: "comment-form" do |form| %>
+
+  <div class="form-group">
+    <%= form.label :body, "Ваш комментарий" %>
+
+    <%= form.text_area :body,
+                       rows: 4,
+                       maxlength: 2000,
+                       required: true,
+                       placeholder: "Поделитесь своим мнением...",
+                       class: "form-control" %>
+  </div>
+
+  <%= form.submit "Оставить комментарий",
+                  class: "btn btn-primary" %>
+<% end %>

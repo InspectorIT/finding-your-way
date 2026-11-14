@@ -49,4 +49,39 @@
                profile: @psychologist,
                home_page: false %>
   </section>
+
+  <section class="comments-section" id="comments">
+    <h2>Комментарии</h2>
+
+    <%= turbo_stream_from @psychologist, :comments %>
+
+    <div class="comments-list" id="comments_list">
+      <% if @comments.any? %>
+        <%= render partial: "comments/comment",
+                   collection: @comments,
+                   as: :comment,
+                   locals: { show_actions: true } %>
+      <% else %>
+        <%= render "comments/empty" %>
+      <% end %>
+    </div>
+
+    <div class="comment-form-section">
+      <% if logged_in? && current_user.client? %>
+        <h3>Оставить комментарий</h3>
+
+        <%= render "comments/form",
+                   psychologist: @psychologist,
+                   comment: @new_comment %>
+
+      <% elsif !logged_in? %>
+        <p>
+          <%= link_to "Войдите", auth_login_path %>,
+          чтобы оставить комментарий.
+        </p>
+      <% else %>
+        <p>Комментарии могут оставлять авторизованные клиенты.</p>
+      <% end %>
+    </div>
+  </section>
 </div>

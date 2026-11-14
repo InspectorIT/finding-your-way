@@ -7,6 +7,8 @@ class User < ApplicationRecord
            foreign_key: :client_id,
            dependent: :destroy
 
+  has_many :comments, dependent: :destroy
+
   enum :role, {
     client: "client",
     psychologist: "psychologist",

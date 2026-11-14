@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  psychologist_profile: one
+  body: MyText
+
+two:
+  user: two
+  psychologist_profile: two
+  body: MyText

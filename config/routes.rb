@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   get "account/appointments",
       to: "account#appointments",
       as: :account_appointments
-  resources :psychologists, only: [ :index, :show ]
+  resources :psychologists, only: [ :index, :show ] do
+    resources :comments, only: %i[create edit update destroy]
+  end
   resources :appointments, only: %i[create update destroy]
   resources :psychologist_applications, only: [ :new, :create ]
   resources :slots, only: %i[index create edit update destroy]

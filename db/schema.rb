@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_01_145838) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_14_155525) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_145838) do
     t.index ["slot_id"], name: "index_appointments_on_slot_id", unique: true
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "psychologist_profile_id", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["psychologist_profile_id", "created_at"], name: "index_comments_on_psychologist_profile_id_and_created_at"
+    t.index ["psychologist_profile_id"], name: "index_comments_on_psychologist_profile_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
   create_table "psychologist_profiles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.text "specialization", null: false
@@ -88,6 +99,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_01_145838) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "appointments", "slots"
   add_foreign_key "appointments", "users", column: "client_id"
+  add_foreign_key "comments", "psychologist_profiles"
+  add_foreign_key "comments", "users"
   add_foreign_key "psychologist_profiles", "users"
   add_foreign_key "slots", "psychologist_profiles", column: "psychologist_id"
 end

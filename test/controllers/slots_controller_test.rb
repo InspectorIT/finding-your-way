@@ -47,9 +47,10 @@ class SlotsControllerTest < ActionDispatch::IntegrationTest
   test "pending applicant cannot manage slots" do
     profile = create_profile(
       email: "pending-applicant@example.com",
-      role: :client,
+      role: :psychologist,
       status: :pending
     )
+
     sign_in(profile.user)
 
     get slots_url
@@ -105,6 +106,196 @@ class SlotsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
+  end
+
+  test "approved psychologist can update own free slot" do
+    profile = create_profile(
+      email: "update-slot-psychologist@example.com",
+      role: :psychologist,
+      status: :approved
+    )
+
+    start_time = 2.days.from_now.change(hour: 10, min: 0, sec: 0)
+
+    slot = profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + 50.minutes
+    )
+
+    sign_in(profile.user)
+
+    new_start_time = 3.days.from_now.change(hour: 11, min: 0, sec: 0)
+    new_end_time = new_start_time + 50.minutes
+
+    assert_no_difference("Slot.count") do
+      patch slot_url(slot), params: {
+        slot: {
+          start_time: new_start_time.iso8601,
+          end_time: new_end_time.iso8601
+        }
+      }
+    end
+
+    assert_equal new_start_time.to_i, slot.reload.start_time.to_i
+    assert_equal new_end_time.to_i, slot.end_time.to_i
+    assert_redirected_to slots_url(week: 0)
+  end
+
+  test "approved psychologist can delete own free slot" do
+    profile = create_profile(
+      email: "delete-slot-psychologist@example.com",
+      role: :psychologist,
+      status: :approved
+    )
+
+    start_time = 2.days.from_now.change(hour: 10, min: 0, sec: 0)
+
+    slot = profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + 50.minutes
+    )
+
+    sign_in(profile.user)
+
+    assert_difference("Slot.count", -1) do
+      delete slot_url(slot)
+    end
+
+    assert_redirected_to slots_url(week: 0)
+  end
+
+  test "psychologist cannot update an occupied slot" do
+    profile = create_profile(
+      email: "occupied-update-psychologist@example.com",
+      role: :psychologist,
+      status: :approved
+    )
+
+    start_time = 2.days.from_now.change(hour: 10, min: 0, sec: 0)
+
+    slot = profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + 50.minutes
+    )
+
+    client = create_user("occupied-update-client@example.com", :client)
+
+    Appointment.create!(
+      client: client,
+      slot: slot
+    )
+
+    sign_in(profile.user)
+
+    new_start_time = 3.days.from_now.change(hour: 11, min: 0, sec: 0)
+
+    assert_no_difference("Slot.count") do
+      patch slot_url(slot), params: {
+        slot: {
+          start_time: new_start_time.iso8601,
+          end_time: (new_start_time + 50.minutes).iso8601
+        }
+      }
+    end
+
+    assert_equal start_time.to_i, slot.reload.start_time.to_i
+    assert_redirected_to slots_url(week: 0)
+  end
+
+  test "psychologist cannot delete an occupied slot" do
+    profile = create_profile(
+      email: "occupied-delete-psychologist@example.com",
+      role: :psychologist,
+      status: :approved
+    )
+
+    start_time = 2.days.from_now.change(hour: 10, min: 0, sec: 0)
+
+    slot = profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + 50.minutes
+    )
+
+    client = create_user("occupied-delete-client@example.com", :client)
+
+    Appointment.create!(
+      client: client,
+      slot: slot
+    )
+
+    sign_in(profile.user)
+
+    assert_no_difference("Slot.count") do
+      delete slot_url(slot)
+    end
+
+    assert Slot.exists?(slot.id)
+    assert_redirected_to slots_url(week: 0)
+  end
+
+  test "psychologist cannot update another psychologist's slot" do
+    owner = create_profile(
+      email: "slot-owner@example.com",
+      role: :psychologist,
+      status: :approved
+    )
+
+    another_profile = create_profile(
+      email: "another-slot-owner@example.com",
+      role: :psychologist,
+      status: :approved
+    )
+
+    start_time = 2.days.from_now.change(hour: 10, min: 0, sec: 0)
+
+    slot = another_profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + 50.minutes
+    )
+
+    sign_in(owner.user)
+
+    new_start_time = 3.days.from_now.change(hour: 11, min: 0, sec: 0)
+
+    patch slot_url(slot), params: {
+      slot: {
+        start_time: new_start_time.iso8601,
+        end_time: (new_start_time + 50.minutes).iso8601
+      }
+    }
+
+    assert_response :not_found
+    assert_equal start_time.to_i, slot.reload.start_time.to_i
+  end
+
+  test "psychologist cannot delete another psychologist's slot" do
+    owner = create_profile(
+      email: "another-slot-owner@example.com",
+      role: :psychologist,
+      status: :approved
+    )
+
+    another_profile = create_profile(
+      email: "foreign-slot-owner@example.com",
+      role: :psychologist,
+      status: :approved
+    )
+
+    start_time = 2.days.from_now.change(hour: 10, min: 0, sec: 0)
+
+    slot = another_profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + 50.minutes
+    )
+
+    sign_in(owner.user)
+
+    assert_no_difference("Slot.count") do
+      delete slot_url(slot)
+    end
+
+    assert_response :not_found
+    assert Slot.exists?(slot.id)
   end
 
   private

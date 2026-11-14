@@ -1,4 +1,5 @@
 require "test_helper"
+require "stringio"
 
 class PsychologistProfileTest < ActiveSupport::TestCase
   def build_user
@@ -90,5 +91,66 @@ class PsychologistProfileTest < ActiveSupport::TestCase
     profile = build_profile(session_duration: 0)
 
     assert_not profile.valid?
+  end
+
+  test "accepts PNG psychologist photo" do
+    profile = build_profile
+
+    attach_test_photo(profile, content_type: "image/png")
+
+    assert profile.valid?, profile.errors.full_messages.to_sentence
+  end
+
+  test "accepts JPEG psychologist photo" do
+    profile = build_profile
+
+    attach_test_photo(profile, content_type: "image/jpeg")
+
+    assert profile.valid?, profile.errors.full_messages.to_sentence
+  end
+
+  test "accepts WEBP psychologist photo" do
+    profile = build_profile
+
+    attach_test_photo(profile, content_type: "image/webp")
+
+    assert profile.valid?, profile.errors.full_messages.to_sentence
+  end
+
+  test "rejects unsupported photo format" do
+    profile = build_profile
+
+    attach_test_photo(profile, content_type: "application/pdf")
+
+    assert_not profile.valid?
+    assert_includes profile.errors[:photo],
+                    "должна быть в формате JPG, PNG или WEBP"
+  end
+
+  test "rejects photo larger than 5 MB" do
+    profile = build_profile
+
+    attach_test_photo(
+      profile,
+      content_type: "image/png",
+      data: "a" * (5.megabytes + 1)
+    )
+
+    assert_not profile.valid?
+    assert_includes profile.errors[:photo],
+                    "не должна превышать 5 МБ"
+  end
+
+  private
+
+  def attach_test_photo(profile, content_type:, data: "test-image")
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: StringIO.new(data),
+      filename: "portrait.png",
+      content_type: content_type,
+      identify: false
+    )
+
+    profile.photo.attach(blob)
   end
 end

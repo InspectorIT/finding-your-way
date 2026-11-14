@@ -86,11 +86,209 @@ class AppointmentsControllerTest < ActionDispatch::IntegrationTest
     assert_nil slot.reload.appointment
   end
 
+  test "client can reschedule appointment to another slot with the same psychologist" do
+    profile = create_profile
+    original_slot = create_slot(
+      profile,
+      starts_at: 1.day.from_now.change(usec: 0)
+    )
+    new_slot = create_slot(
+      profile,
+      starts_at: 2.days.from_now.change(usec: 0)
+    )
+    client = create_client
+
+    appointment = Appointment.create!(
+      client: client,
+      slot: original_slot
+    )
+
+    sign_in(client)
+
+    assert_no_difference("Appointment.count") do
+      patch appointment_url(appointment), params: {
+        slot_id: new_slot.id
+      }
+    end
+
+    assert_equal new_slot, appointment.reload.slot
+
+    assert_redirected_to psychologist_url(
+                           profile,
+                           calendar: profile.id,
+                           anchor: "psychologist-#{profile.id}-calendar"
+                         )
+  end
+
+  test "client can reschedule appointment to another psychologist" do
+    first_profile = create_profile
+    second_profile = create_profile(
+      email: "another-psychologist@example.com"
+    )
+
+    original_slot = create_slot(
+      first_profile,
+      starts_at: 1.day.from_now.change(usec: 0)
+    )
+    new_slot = create_slot(
+      second_profile,
+      starts_at: 2.days.from_now.change(usec: 0)
+    )
+
+    client = create_client
+
+    appointment = Appointment.create!(
+      client: client,
+      slot: original_slot
+    )
+
+    sign_in(client)
+
+    assert_no_difference("Appointment.count") do
+      patch appointment_url(appointment), params: {
+        slot_id: new_slot.id
+      }
+    end
+
+    assert_equal new_slot, appointment.reload.slot
+
+    assert_redirected_to psychologist_url(
+                           second_profile,
+                           calendar: second_profile.id,
+                           anchor: "psychologist-#{second_profile.id}-calendar"
+                         )
+  end
+
+  test "client cannot reschedule appointment to an occupied slot" do
+    profile = create_profile
+
+    original_slot = create_slot(
+      profile,
+      starts_at: 1.day.from_now.change(usec: 0)
+    )
+    occupied_slot = create_slot(
+      profile,
+      starts_at: 2.days.from_now.change(usec: 0)
+    )
+
+    client = create_client
+    another_client = create_client(
+      email: "another-client@example.com"
+    )
+
+    appointment = Appointment.create!(
+      client: client,
+      slot: original_slot
+    )
+
+    Appointment.create!(
+      client: another_client,
+      slot: occupied_slot
+    )
+
+    sign_in(client)
+
+    patch appointment_url(appointment), params: {
+      slot_id: occupied_slot.id
+    }
+
+    assert_equal original_slot, appointment.reload.slot
+
+    assert_redirected_to psychologist_url(
+                           profile,
+                           calendar: profile.id,
+                           anchor: "psychologist-#{profile.id}-calendar"
+                         )
+  end
+
+  test "client can cancel own appointment" do
+    profile = create_profile
+    slot = create_slot(
+      profile,
+      starts_at: 1.day.from_now.change(usec: 0)
+    )
+    client = create_client
+
+    appointment = Appointment.create!(
+      client: client,
+      slot: slot
+    )
+
+    sign_in(client)
+
+    assert_difference("Appointment.count", -1) do
+      delete appointment_url(appointment)
+    end
+
+    assert_redirected_to account_url
+  end
+
+  test "client cannot reschedule another client's appointment" do
+    profile = create_profile
+
+    original_slot = create_slot(
+      profile,
+      starts_at: 1.day.from_now.change(usec: 0)
+    )
+    new_slot = create_slot(
+      profile,
+      starts_at: 2.days.from_now.change(usec: 0)
+    )
+
+    owner = create_client
+    another_client = create_client(
+      email: "another-client@example.com"
+    )
+
+    appointment = Appointment.create!(
+      client: owner,
+      slot: original_slot
+    )
+
+    sign_in(another_client)
+
+    assert_no_difference("Appointment.count") do
+      patch appointment_url(appointment), params: {
+        slot_id: new_slot.id
+      }
+    end
+
+    assert_response :not_found
+    assert_equal original_slot, appointment.reload.slot
+  end
+
+  test "client cannot cancel another client's appointment" do
+    profile = create_profile
+    slot = create_slot(
+      profile,
+      starts_at: 1.day.from_now.change(usec: 0)
+    )
+
+    owner = create_client
+    another_client = create_client(
+      email: "another-client@example.com"
+    )
+
+    appointment = Appointment.create!(
+      client: owner,
+      slot: slot
+    )
+
+    sign_in(another_client)
+
+    assert_no_difference("Appointment.count") do
+      delete appointment_url(appointment)
+    end
+
+    assert_response :not_found
+    assert Appointment.exists?(appointment.id)
+  end
+
   private
 
-  def create_profile
+  def create_profile(email: "psychologist@example.com")
     user = User.create!(
-      email: "psychologist@example.com",
+      email: email,
       password: "password123",
       password_confirmation: "password123",
       name: "Анна Петрова",
@@ -109,15 +307,24 @@ class AppointmentsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
-  def create_client
+  def create_client(email: "client@example.com")
     User.create!(
-      email: "client@example.com",
+      email: email,
       password: "password123",
       password_confirmation: "password123",
       name: "Мария Клиент",
       phone: "+79994445566",
       role: :client
     )
+  end
+
+  def sign_in(user)
+    post auth_login_url, params: {
+      email: user.email,
+      password: "password123"
+    }
+
+    assert_redirected_to root_url
   end
 
   def create_slot(profile, starts_at:)

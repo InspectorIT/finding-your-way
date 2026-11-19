@@ -116,6 +116,12 @@ export default class extends Controller {
     }
 
     validateSubmit(event) {
+        console.log(
+            "Проверка отправки:",
+            this.inputTarget.files.length,
+            this.cropConfirmed
+        )
+
         const photoSelected = this.inputTarget.files.length > 0
 
         if (photoSelected && !this.cropConfirmed) {

@@ -2,15 +2,43 @@ class Comment < ApplicationRecord
   belongs_to :user
   belongs_to :psychologist_profile
 
+  before_validation :mark_verified_client, on: :create
+
   validates :body,
             presence: true,
             length: { maximum: 2_000 }
+
+  validate :author_must_have_appointment, on: :create
 
   after_create_commit :broadcast_created_comment
   after_update_commit :broadcast_updated_comment
   after_destroy_commit :broadcast_destroyed_comment
 
   private
+
+  def appointments_with_psychologist
+    return Appointment.none if user_id.blank? || psychologist_profile_id.blank?
+
+    Appointment.joins(:slot)
+               .where(client_id: user_id)
+               .where(slots: { psychologist_id: psychologist_profile_id })
+  end
+
+  def author_must_have_appointment
+    return if appointments_with_psychologist.exists?
+
+    errors.add(
+      :base,
+      "Оставить комментарий можно только при наличии записи к этому психологу."
+    )
+  end
+
+  def mark_verified_client
+    self.verified_client =
+      appointments_with_psychologist
+        .where("slots.end_time <= ?", Time.current)
+        .exists?
+  end
 
   def broadcast_created_comment
     broadcast_remove_to(
@@ -24,7 +52,7 @@ class Comment < ApplicationRecord
       :comments,
       target: "comments_list",
       partial: "comments/comment",
-      locals: { comment: self }
+      locals: { comment: self, show_actions: true }
     )
   end
 

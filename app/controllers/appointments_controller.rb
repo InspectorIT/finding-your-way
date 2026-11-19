@@ -18,7 +18,7 @@ class AppointmentsController < ApplicationController
       return
     end
 
-    if current_user.appointments.exists?
+    if current_user.appointments.active.exists?
       redirect_to account_path,
                   alert: "У вас уже есть запись. Перенесите или отмените её."
       return
@@ -47,6 +47,12 @@ class AppointmentsController < ApplicationController
   end
 
   def update
+    if @appointment.slot.end_time <= Time.current
+      redirect_to account_path,
+                  alert: "Завершённый сеанс уже находится в архиве и не может быть перенесён."
+      return
+    end
+
     unless booking_allowed?
       redirect_to root_path,
                   alert: "Переносить запись могут только клиенты и психологи."
@@ -89,6 +95,12 @@ class AppointmentsController < ApplicationController
   end
 
   def destroy
+    if @appointment.slot.end_time <= Time.current
+      redirect_to account_path,
+                  alert: "Завершённый сеанс уже находится в архиве и не может быть отменён."
+      return
+    end
+
     @appointment.destroy
 
     redirect_to account_path,

@@ -2,12 +2,17 @@ class Appointment < ApplicationRecord
   belongs_to :client, class_name: "User"
   belongs_to :slot
 
+  scope :active, -> {
+    joins(:slot).where("slots.end_time > ?", Time.current)
+  }
+
+  scope :archived, -> {
+    joins(:slot).where("slots.end_time <= ?", Time.current)
+  }
+
   validates :slot_id, uniqueness: true
 
-  validates :client_id,
-            uniqueness: {
-              message: "У вас уже есть активная запись. Перенесите или отмените её."
-            }
+  validate :client_has_no_active_appointment
 
   after_create_commit :broadcast_slot_booking
   after_update_commit :broadcast_rescheduled_slots,
@@ -145,5 +150,19 @@ class Appointment < ApplicationRecord
       start_time: start_time.strftime("%H:%M"),
       end_time: end_time.strftime("%H:%M")
     }
+  end
+
+  def client_has_no_active_appointment
+    return if client_id.blank?
+
+    existing_appointments = self.class.active.where(client_id: client_id)
+    existing_appointments = existing_appointments.where.not(id: id) if persisted?
+
+    if existing_appointments.exists?
+      errors.add(
+        :client_id,
+        "У вас уже есть активная запись. Перенесите или отмените её."
+      )
+    end
   end
 end

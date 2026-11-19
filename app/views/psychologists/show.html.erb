@@ -69,7 +69,7 @@
     </div>
 
     <div class="comment-form-section">
-      <% if logged_in? && current_user.client? %>
+      <% if @can_comment %>
         <h3>Оставить комментарий</h3>
 
         <%= render "comments/form",
@@ -81,6 +81,12 @@
           <%= link_to "Войдите", auth_login_path %>,
           чтобы оставить комментарий.
         </p>
+
+      <% elsif current_user.client? %>
+        <p>
+          Чтобы оставить комментарий, необходимо иметь запись к этому психологу.
+        </p>
+
       <% else %>
         <p>Комментарии могут оставлять авторизованные клиенты.</p>
       <% end %>

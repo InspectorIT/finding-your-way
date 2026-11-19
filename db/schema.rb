@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_14_155525) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_211350) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,7 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_155525) do
     t.bigint "slot_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["client_id"], name: "index_appointments_on_client_id", unique: true
+    t.index ["client_id"], name: "index_appointments_on_client_id"
     t.index ["slot_id"], name: "index_appointments_on_slot_id", unique: true
   end
 
@@ -57,6 +57,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_155525) do
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "anonymous", default: false, null: false
+    t.boolean "verified_client", default: false, null: false
     t.index ["psychologist_profile_id", "created_at"], name: "index_comments_on_psychologist_profile_id_and_created_at"
     t.index ["psychologist_profile_id"], name: "index_comments_on_psychologist_profile_id"
     t.index ["user_id"], name: "index_comments_on_user_id"

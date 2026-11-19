@@ -29,6 +29,14 @@ class PsychologistsController < ApplicationController
 
     @new_comment = @psychologist.comments.build
 
+    @can_comment =
+      logged_in? &&
+      current_user.client? &&
+      Appointment.joins(:slot)
+                 .where(client_id: current_user.id)
+                 .where(slots: { psychologist_id: @psychologist.id })
+                 .exists?
+
     @week_offset = params.fetch(:week, "0").to_i.clamp(0, 52)
     week_start = calendar_week_start(@week_offset)
 

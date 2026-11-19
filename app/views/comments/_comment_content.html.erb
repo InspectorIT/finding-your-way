@@ -1,5 +1,13 @@
 <div class="comment__header">
-  <strong><%= comment.user.name %></strong>
+  <strong>
+    <%= comment.anonymous? ? "Анонимный пользователь" : comment.user.name %>
+  </strong>
+
+  <% if comment.verified_client? %>
+    <span class="comment__verified-badge">
+      ✓ Подтверждённый клиент
+    </span>
+  <% end %>
 
   <time datetime="<%= comment.created_at.iso8601 %>">
     <%= comment.created_at.strftime("%d.%m.%Y, %H:%M") %>

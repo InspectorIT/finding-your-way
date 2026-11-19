@@ -5,6 +5,8 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     profile = create_profile
     client = create_user("client@example.com", :client)
 
+    create_appointment(client, profile)
+
     sign_in(client)
 
     assert_difference("Comment.count", 1) do
@@ -39,6 +41,8 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     profile = create_profile
     client = create_user("client@example.com", :client)
 
+    create_appointment(client, profile)
+
     comment = profile.comments.create!(
       user: client,
       body: "Старый комментарий"
@@ -57,6 +61,8 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
   test "client can delete own comment" do
     profile = create_profile
     client = create_user("client@example.com", :client)
+
+    create_appointment(client, profile)
 
     comment = profile.comments.create!(
       user: client,
@@ -78,6 +84,8 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     author = create_user("author@example.com", :client)
     another_client = create_user("another@example.com", :client)
 
+    create_appointment(author, profile)
+
     comment = profile.comments.create!(
       user: author,
       body: "Комментарий автора"
@@ -98,6 +106,8 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
 
     author = create_user("author@example.com", :client)
     another_client = create_user("another@example.com", :client)
+
+    create_appointment(author, profile)
 
     comment = profile.comments.create!(
       user: author,
@@ -124,6 +134,29 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to auth_login_url
+  end
+
+  test "client with completed appointment gets verified badge" do
+    profile = create_profile
+    client = create_user("verified@example.com", :client)
+
+    create_appointment(client, profile, completed: true)
+
+    sign_in(client)
+
+    assert_difference("Comment.count", 1) do
+      post psychologist_comments_url(profile), params: {
+        comment: {
+          body: "Сеанс уже состоялся!",
+          anonymous: false
+        }
+      }
+    end
+
+    comment = Comment.order(:id).last
+
+    assert comment.verified_client?
+    assert_not comment.anonymous?
   end
 
   private
@@ -162,6 +195,27 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
       session_duration: 50,
       bio: "Описание психолога.",
       status: :approved
+    )
+  end
+
+  def create_appointment(client, profile, completed: false)
+    start_time = 1.day.from_now
+
+    slot = profile.slots.create!(
+      start_time: start_time,
+      end_time: start_time + profile.session_duration.minutes
+    )
+
+    if completed
+      slot.update_columns(
+        start_time: 2.hours.ago,
+        end_time: 1.hour.ago
+      )
+    end
+
+    Appointment.create!(
+      client: client,
+      slot: slot
     )
   end
 end

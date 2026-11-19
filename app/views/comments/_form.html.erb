@@ -1,4 +1,10 @@
-<%= form_with model: [psychologist, comment],
+<%= form_with url: (
+  comment.persisted? ?
+    psychologist_comment_path(psychologist, comment) :
+    psychologist_comments_path(psychologist)
+),
+              scope: :comment,
+              method: (comment.persisted? ? :patch : :post),
               local: true,
               class: "comment-form" do |form| %>
 

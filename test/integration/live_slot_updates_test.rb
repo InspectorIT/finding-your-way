@@ -35,12 +35,7 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
     other_profile = create_profile(other_psychologist)
 
     # 2. Создаём свободный слот.
-    start_time = 2.days.from_now.change(
-      hour: 10,
-      min: 0,
-      sec: 0,
-      usec: 0
-    )
+    start_time = calendar_visible_future_time
 
     slot = profile.slots.create!(
       start_time: start_time,
@@ -123,12 +118,7 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
 
     profile = create_profile(psychologist)
 
-    start_time = 2.days.from_now.change(
-      hour: 10,
-      min: 0,
-      sec: 0,
-      usec: 0
-    )
+    start_time = calendar_visible_future_time
 
     post auth_login_url, params: {
       email: psychologist.email,
@@ -298,6 +288,23 @@ class LiveSlotUpdatesTest < ActionDispatch::IntegrationTest
   end
 
   private
+
+  def calendar_visible_future_time
+    if Time.zone.today.cwday.between?(1, 5)
+      Time.current + 5.minutes
+    else
+      next_monday = Time.zone.today.beginning_of_week + 1.week
+
+      Time.zone.local(
+        next_monday.year,
+        next_monday.month,
+        next_monday.day,
+        10,
+        0,
+        0
+      )
+    end
+  end
 
   def create_user(email:, name:, phone:, role:)
     User.create!(
